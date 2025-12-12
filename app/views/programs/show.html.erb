@@ -1,70 +1,34 @@
-<div class="page-header">
-  <div>
-    <h1><%= @program.name %></h1>
-    <p class="subtle"><%= @program.customer %></p>
-  </div>
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>FY</th>
+        <th>Start</th>
+        <th>End</th>
+        <th class="num">Planned qty</th>
+        <th class="num">Sell price</th>
+        <th class="actions-cell"></th>
+      </tr>
+    </thead>
 
-  <div class="actions">
-    <%= link_to "New contract", new_program_contract_path(@program), class: "btn btn-primary" %>
-    <%= link_to "Edit program", edit_program_path(@program), class: "btn" %>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-body">
-    <div class="badge">Program description</div>
-    <p style="margin: 10px 0 0;"><%= simple_format(@program.description.to_s) %></p>
-  </div>
-</div>
-
-<div style="height: 14px;"></div>
-
-<div class="card">
-  <div class="card-body">
-    <div class="page-header" style="margin: 0 0 10px;">
-      <div>
-        <h1 style="font-size:18px;">Contracts</h1>
-        <p class="subtle">Pricing and planned quantity by fiscal year.</p>
-      </div>
-      <div class="actions">
-        <%= link_to "Add contract", new_program_contract_path(@program), class: "btn btn-sm btn-primary" %>
-      </div>
-    </div>
-
-    <% if @program.contracts.any? %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>FY</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Planned qty</th>
-            <th>Sell price</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @program.contracts.each do |c| %>
-            <tr>
-              <td><%= link_to c.contract_code, [@program, c] %></td>
-              <td><%= c.fiscal_year %></td>
-              <td><%= c.start_date %></td>
-              <td><%= c.end_date %></td>
-              <td><%= c.planned_quantity %></td>
-              <td><%= number_to_currency(c.sell_price_per_unit) %></td>
-              <td>
-                <div class="actions">
-                  <%= link_to "View", [@program, c], class: "btn btn-sm" %>
-                  <%= link_to "Edit", edit_program_contract_path(@program, c), class: "btn btn-sm" %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p class="subtle">No contracts yet for this program.</p>
-    <% end %>
-  </div>
+    <tbody>
+      <% @program.contracts.each do |c| %>
+        <tr>
+          <td><%= link_to c.contract_code, c %></td>
+          <td><%= c.fiscal_year %></td>
+          <td><%= c.start_date %></td>
+          <td><%= c.end_date %></td>
+          <td class="num"><%= c.planned_quantity %></td>
+          <td class="num"><%= number_to_currency(c.sell_price_per_unit) %></td>
+          <td class="actions-cell">
+            <div class="actions">
+              <%= link_to "View", c, class: "btn btn-sm" %>
+              <%= link_to "Edit", edit_contract_path(c), class: "btn btn-sm" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
