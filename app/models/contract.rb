@@ -30,24 +30,35 @@ class Contract < ApplicationRecord
 
   # aggregated helpers
   def total_units_delivered
-    contract_periods.sum(:units_delivered)
-  end
-
-  def total_cost
-    contract_periods.sum(&:total_cost)
+    contract_periods.sum(:units_delivered).to_i
   end
 
   def total_revenue
-    contract_periods.sum(&:revenue_total)
+    contract_periods.sum { |p| p.revenue_total.to_f }
+  end
+
+  def total_cost
+    contract_periods.sum { |p| p.total_cost.to_f }
+  end
+
+  def total_margin
+    total_revenue - total_cost
   end
 
   def average_cost_per_unit
-    return 0 if total_units_delivered.zero?
-    total_cost / total_units_delivered
+    units = total_units_delivered
+    return 0 if units == 0
+    total_cost / units
   end
 
   def average_margin_per_unit
-    return 0 if total_units_delivered.zero?
-    (total_revenue - total_cost) / total_units_delivered
+    units = total_units_delivered
+    return 0 if units == 0
+    total_margin / units
   end
+
+  # Optional aliases if you ever used different names elsewhere
+  alias_method :avg_cost_per_unit, :average_cost_per_unit
+  alias_method :avg_margin_per_unit, :average_margin_per_unit
+  
 end

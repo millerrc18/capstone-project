@@ -1,3 +1,48 @@
+<div class="page-header">
+  <div>
+    <h1><%= @contract.contract_code %></h1>
+    <p class="subtle"><%= @contract.program.name %> • FY <%= @contract.fiscal_year %></p>
+  </div>
+
+  <div class="actions">
+    <%= link_to "Add period", new_contract_contract_period_path(@contract), class: "btn btn-primary" %>
+    <%= link_to "Edit", edit_contract_path(@contract), class: "btn" %>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi">
+    <p class="label">Units delivered</p>
+    <p class="value"><%= @contract.total_units_delivered %></p>
+    <p class="hint">Planned: <%= @contract.planned_quantity %></p>
+  </div>
+
+  <div class="kpi">
+    <p class="label">Revenue</p>
+    <p class="value"><%= number_to_currency(@contract.total_revenue) %></p>
+    <p class="hint">Based on delivered units</p>
+  </div>
+
+  <div class="kpi">
+    <p class="label">Total cost</p>
+    <p class="value"><%= number_to_currency(@contract.total_cost) %></p>
+    <p class="hint">Labor + material + other</p>
+  </div>
+
+  <% margin = @contract.total_margin %>
+  <div class="kpi">
+    <p class="label">Total margin</p>
+    <p class="value <%= margin < 0 ? "negative" : "positive" %>">
+      <%= number_to_currency(margin) %>
+    </p>
+    <p class="hint">
+      Avg margin/unit: <%= number_to_currency(@contract.avg_margin_per_unit) %>
+    </p>
+  </div>
+</div>
+
+<div class="spacer-18"></div>
+
 <h1>Contract <%= @contract.contract_code %></h1>
 
 <p><strong>Program:</strong> <%= link_to @contract.program.name, @contract.program %></p>
