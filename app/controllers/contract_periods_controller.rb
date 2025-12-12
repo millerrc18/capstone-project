@@ -33,7 +33,10 @@ class ContractPeriodsController < ApplicationController
   private
 
   def set_contract
-    @contract = Contract.find(params[:contract_id])
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:contract_id])
+
   end
 
   def set_period

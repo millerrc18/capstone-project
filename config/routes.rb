@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  get "period_imports/new"
-  get "period_imports/create"
+  devise_for :users
+
   resources :programs do
     resources :contracts, shallow: true do
       resources :contract_periods, shallow: true
@@ -10,5 +10,11 @@ Rails.application.routes.draw do
     end
   end
 
-  root "programs#index"
+  authenticated :user do
+    root to: "programs#index", as: :authenticated_root
+  end
+
+  unauthenticated do
+    root to: redirect("/users/sign_in"), as: :unauthenticated_root
+  end
 end

@@ -1,12 +1,16 @@
 class ContractsController < ApplicationController
-  before_action :set_program, only: %i[new create]
+  before_action :set_program, only: [:index, :new, :create]
+  before_action :set_contract, only: [:show, :edit, :update, :destroy]
+
 
   def index
     @contracts = Contract.includes(:program).all
   end
 
   def show
-    @contract = Contract.find(params[:id])
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:id])
     @periods  = @contract.contract_periods.order(:period_start_date)
     @milestones = @contract.delivery_milestones.order(:due_date)
     @units = @contract.delivery_units.order(:ship_date, :unit_serial)
@@ -26,11 +30,15 @@ class ContractsController < ApplicationController
   end
 
   def edit
-    @contract = Contract.find(params[:id])
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:id])
   end
 
   def update
-    @contract = Contract.find(params[:id])
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:id])
     if @contract.update(contract_params)
       redirect_to @contract, notice: 'Contract was successfully updated.'
     else
@@ -39,7 +47,9 @@ class ContractsController < ApplicationController
   end
 
   def destroy
-    @contract = Contract.find(params[:id])
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:id])
     @contract.destroy
     redirect_to program_path(@contract.program), notice: 'Contract was successfully destroyed.'
   end
@@ -47,7 +57,7 @@ class ContractsController < ApplicationController
   private
 
   def set_program
-    @program = Program.find(params[:program_id])
+    @program = current_user.programs.find(params[:program_id])
   end
 
   def contract_params
@@ -62,4 +72,16 @@ class ContractsController < ApplicationController
       :notes
     )
   end
+
+  def set_program
+    @program = current_user.programs.find(params[:program_id])
+  end
+
+  def set_contract
+    @contract = Contract.joins(:program)
+      .where(programs: { user_id: current_user.id })
+      .find(params[:id])
+  end
+
+
 end

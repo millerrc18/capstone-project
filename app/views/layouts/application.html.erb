@@ -14,15 +14,29 @@
   <body>
     <header class="topbar">
       <div class="container topbar-inner">
-        <%= link_to root_path, class: "brand" do %>
+        <% home_path = user_signed_in? ? programs_path : new_user_session_path %>
+
+        <%= link_to(home_path, class: "brand") do %>
           <span class="brand-badge" aria-hidden="true"></span>
           <span>PM Copilot</span>
         <% end %>
 
-        <nav class="nav">
-          <%= link_to "Programs", programs_path %>
-          <%= link_to "New program", new_program_path, class: "btn btn-primary btn-sm" %>
-        </nav>
+        <div class="topbar-actions">
+          <% if user_signed_in? %>
+            <span class="subtle"><%= current_user.email %></span>
+
+            <%= link_to "Programs", programs_path, class: "btn btn-sm" %>
+            <%= link_to "New program", new_program_path, class: "btn btn-primary btn-sm" %>
+
+            <%= button_to "Sign out",
+                          destroy_user_session_path,
+                          method: :delete,
+                          class: "btn btn-sm" %>
+          <% else %>
+            <%= link_to "Sign in", new_user_session_path, class: "btn btn-sm btn-primary" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "btn btn-sm" %>
+          <% end %>
+        </div>
       </div>
     </header>
 

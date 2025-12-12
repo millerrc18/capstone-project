@@ -1,43 +1,44 @@
 class ProgramsController < ApplicationController
   def index
-    @programs = Program.all
+    @programs = current_user.programs.order(:name)
   end
 
   def show
-    @program = Program.find(params[:id])
+    @program = current_user.programs.find(params[:id])
     @contracts = @program.contracts
   end
 
   def new
-    @program = Program.new
+    @program = current_user.programs.new
   end
 
   def create
-    @program = Program.new(program_params)
+    @program = current_user.programs.new(program_params)
     if @program.save
       redirect_to @program, notice: 'Program was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @program = Program.find(params[:id])
+    @program = current_user.programs.find(params[:id])
   end
 
   def update
-    @program = Program.find(params[:id])
+  @program = current_user.programs.find(params[:id])
+
     if @program.update(program_params)
-      redirect_to @program, notice: 'Program was successfully updated.'
+      redirect_to @program, notice: "Program was successfully updated."
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @program = Program.find(params[:id])
+    @program = current_user.programs.find(params[:id])
     @program.destroy
-    redirect_to programs_url, notice: 'Program was successfully destroyed.'
+    redirect_to programs_url, notice: "Program was successfully destroyed."
   end
 
   private
