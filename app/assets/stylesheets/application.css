@@ -2,6 +2,10 @@
   PM Copilot UI: modern, minimalist baseline
 */
 
+/* -------------------------
+   Theme tokens
+-------------------------- */
+
 :root {
   --bg: #f6f7fb;
   --surface: #ffffff;
@@ -44,14 +48,19 @@
   }
 }
 
+/* -------------------------
+   Base
+-------------------------- */
+
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 
 body {
   margin: 0;
-  background: radial-gradient(1200px 600px at 20% -10%, rgba(37, 99, 235, 0.18), transparent 55%),
-              radial-gradient(900px 500px at 90% 0%, rgba(34, 211, 238, 0.14), transparent 55%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(37, 99, 235, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(34, 211, 238, 0.14), transparent 55%),
+    var(--bg);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   line-height: 1.45;
@@ -60,19 +69,39 @@ body {
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.03em;
+}
+
+.subtle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .container {
   max-width: 1120px;
   margin: 0 auto;
   padding: 0 18px;
 }
 
+.main {
+  padding: 26px 0 60px;
+}
+
+/* -------------------------
+   Topbar
+-------------------------- */
+
 .topbar {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: color-mix(in srgb, var(--bg) 70%, transparent);
-  backdrop-filter: blur(12px);
+  background: var(--surface); /* solid to avoid weird grey tint */
   border-bottom: 1px solid var(--border);
+  backdrop-filter: none;
 }
 
 .topbar-inner {
@@ -84,7 +113,7 @@ a:hover { text-decoration: underline; }
 }
 
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: 750;
@@ -99,26 +128,16 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--shadow);
 }
 
-.nav {
+.topbar-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.nav a {
-  padding: 8px 10px;
-  border-radius: 10px;
-  color: var(--muted);
-}
-.nav a:hover {
-  background: color-mix(in srgb, var(--surface) 65%, transparent);
-  text-decoration: none;
-  color: var(--text);
-}
-
-.main {
-  padding: 26px 0 60px;
-}
+/* -------------------------
+   Layout helpers
+-------------------------- */
 
 .page-header {
   display: flex;
@@ -128,16 +147,24 @@ a:hover { text-decoration: underline; }
   margin: 10px 0 18px;
 }
 
-h1 {
-  margin: 0;
-  font-size: 28px;
-  letter-spacing: -0.03em;
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-.subtle {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-}
+
+/* button_to generates a <form> wrapper */
+.actions form { margin: 0; }
+
+/* spacers */
+.spacer-12 { height: 12px; }
+.spacer-18 { height: 18px; }
+.spacer-24 { height: 24px; }
+
+/* -------------------------
+   Cards
+-------------------------- */
 
 .card {
   background: linear-gradient(180deg, var(--surface), var(--surface-2));
@@ -150,54 +177,20 @@ h1 {
 .card-body { padding: 18px; }
 .card-body + .card-body { border-top: 1px solid var(--border); }
 
-.table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  table-layout: fixed;
-}
-
-.table th, .table td {
-  padding: 12px 14px;
-}
-
-.table th {
-  white-space: nowrap;
-}
-
-.table td {
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.table td.wrap {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: initial;
-}
-
-.table td.num, .table th.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.table td.actions-cell {
-  width: 160px;
-  white-space: nowrap;
-}
-
-.table thead th:first-child { border-top-left-radius: 12px; }
-.table thead th:last-child  { border-top-right-radius: 12px; }
-
-
-.actions {
-  display: flex;
+.badge {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
 }
+
+/* -------------------------
+   Buttons
+-------------------------- */
 
 .btn {
   display: inline-flex;
@@ -213,36 +206,98 @@ h1 {
   font-size: 14px;
   cursor: pointer;
   text-decoration: none;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
 }
+
 .btn:hover {
   text-decoration: none;
   transform: translateY(-1px);
 }
+
 .btn:active { transform: translateY(0); }
 
 .btn-primary {
   border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
   background: linear-gradient(180deg, var(--primary), var(--primary-2));
-  color: white;
+  color: #ffffff;
 }
+
 .btn-danger {
   border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
   background: color-mix(in srgb, var(--danger) 18%, var(--surface));
   color: var(--text);
 }
 
-.btn-sm { padding: 8px 10px; border-radius: 10px; font-size: 13px; }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--muted);
+.btn-sm {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
 }
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* -------------------------
+   Tables
+-------------------------- */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th, .table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table thead th {
+  white-space: nowrap;
+  text-align: left;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+}
+
+.table tbody tr:hover td {
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+}
+
+.table td {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table td.wrap {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: initial;
+}
+
+.table td.num, .table th.num, .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table td.actions-cell {
+  width: 180px;
+  white-space: nowrap;
+}
+
+/* -------------------------
+   Flash messages
+-------------------------- */
 
 .flash {
   margin: 0 0 16px;
@@ -251,8 +306,21 @@ h1 {
   border: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface) 85%, transparent);
 }
+
 .flash.notice { border-color: color-mix(in srgb, var(--success) 35%, var(--border)); }
 .flash.alert  { border-color: color-mix(in srgb, var(--danger) 35%, var(--border)); }
+
+/* -------------------------
+   Forms
+-------------------------- */
+
+label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--muted);
+}
 
 input, select, textarea {
   width: 100%;
@@ -263,19 +331,22 @@ input, select, textarea {
   color: var(--text);
   outline: none;
 }
+
 input:focus, select:focus, textarea:focus {
   box-shadow: var(--ring);
   border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
 }
-label {
-  display: block;
-  margin: 14px 0 6px;
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--muted);
+
+.form-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.form-actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+/* -------------------------
+   Dashboard KPI blocks
+-------------------------- */
 
 .kpi-grid {
   display: grid;
@@ -287,6 +358,10 @@ label {
   .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (max-width: 520px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}
+
 .kpi {
   padding: 16px;
   border-radius: var(--radius);
@@ -295,22 +370,25 @@ label {
   box-shadow: var(--shadow);
 }
 
+.kpi-label,
 .kpi .label {
   color: var(--muted);
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 800;
   margin: 0 0 6px;
 }
 
+.kpi-value,
 .kpi .value {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
+.kpi-subtle,
 .kpi .hint {
-  margin: 8px 0 0;
+  margin-top: 8px;
   color: var(--muted);
   font-size: 13px;
 }
@@ -318,6 +396,127 @@ label {
 .value.negative { color: var(--danger); }
 .value.positive { color: var(--success); }
 
-.spacer-12 { height: 12px; }
-.spacer-18 { height: 18px; }
-.spacer-24 { height: 24px; }
+.progress {
+  margin-top: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+}
+
+/* -------------------------
+   Auth pages
+-------------------------- */
+
+.auth-shell {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.auth-header h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.auth-header .subtle { margin-top: 6px; }
+
+.form {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.field label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+
+.input:focus {
+  box-shadow: var(--ring);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.form-errors {
+  margin-top: 12px;
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.form-errors-title {
+  font-weight: 900;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.auth-footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.auth-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-links .link {
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.auth-links .link:hover { text-decoration: underline; }
+

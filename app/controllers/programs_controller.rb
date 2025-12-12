@@ -5,6 +5,7 @@ class ProgramsController < ApplicationController
 
   def show
     @program = current_user.programs.find(params[:id])
+    @dashboard = ProgramDashboard.new(@program).call
     @contracts = @program.contracts
   end
 

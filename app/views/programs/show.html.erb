@@ -1,34 +1,162 @@
-<div class="table-container">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>FY</th>
-        <th>Start</th>
-        <th>End</th>
-        <th class="num">Planned qty</th>
-        <th class="num">Sell price</th>
-        <th class="actions-cell"></th>
-      </tr>
-    </thead>
+<div class="page-header">
+  <div>
+    <h1><%= @program.name %></h1>
+    <p class="subtle"><%= @program.customer %></p>
+  </div>
 
-    <tbody>
-      <% @program.contracts.each do |c| %>
-        <tr>
-          <td><%= link_to c.contract_code, c %></td>
-          <td><%= c.fiscal_year %></td>
-          <td><%= c.start_date %></td>
-          <td><%= c.end_date %></td>
-          <td class="num"><%= c.planned_quantity %></td>
-          <td class="num"><%= number_to_currency(c.sell_price_per_unit) %></td>
-          <td class="actions-cell">
-            <div class="actions">
-              <%= link_to "View", c, class: "btn btn-sm" %>
-              <%= link_to "Edit", edit_contract_path(c), class: "btn btn-sm" %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="actions">
+    <%= link_to "Back", programs_path, class: "btn btn-sm" %>
+    <%= link_to "Add contract", new_program_contract_path(@program), class: "btn btn-sm btn-primary" %>
+    <%= link_to "Edit program", edit_program_path(@program), class: "btn btn-sm" %>
+  </div>
 </div>
+
+<% if @program.description.present? %>
+  <div class="card">
+    <div class="card-body">
+      <div class="badge">Program description</div>
+      <p style="margin: 10px 0 0;"><%= simple_format(@program.description) %></p>
+    </div>
+  </div>
+
+  <div class="spacer-18"></div>
+<% end %>
+
+<% if defined?(@dashboard) && @dashboard.present? %>
+  <div class="card">
+    <div class="card-body">
+      <div class="page-header" style="margin: 0 0 12px;">
+        <div>
+          <h1 style="font-size:18px;">Program dashboard</h1>
+          <p class="subtle">Aggregated metrics across all contracts under this program.</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <p class="label">Revenue to date</p>
+          <p class="value"><%= number_to_currency(@dashboard[:totals][:revenue_to_date]) %></p>
+        </div>
+
+        <div class="kpi">
+          <p class="label">Cost to date</p>
+          <p class="value"><%= number_to_currency(@dashboard[:totals][:cost_to_date]) %></p>
+        </div>
+
+        <div class="kpi">
+          <p class="label">Margin to date</p>
+          <p class="value <%= @dashboard[:totals][:margin_to_date].to_d < 0 ? "negative" : "positive" %>">
+            <%= number_to_currency(@dashboard[:totals][:margin_to_date]) %>
+          </p>
+          <p class="hint"><%= (@dashboard[:totals][:margin_pct_to_date].to_d * 100).round(1) %>%</p>
+        </div>
+
+        <div class="kpi">
+          <p class="label">Avg cost per unit</p>
+          <p class="value"><%= number_to_currency(@dashboard[:totals][:avg_cost_per_unit]) %></p>
+        </div>
+
+        <div class="kpi">
+          <p class="label">OTD to date</p>
+          <p class="value"><%= (@dashboard[:totals][:otd_pct_to_date].to_d * 100).round(1) %>%</p>
+          <div class="progress">
+            <div class="progress-bar" style="width:<%= [(@dashboard[:totals][:otd_pct_to_date].to_d * 100).round, 100].min %>%"></div>
+          </div>
+          <p class="hint">Past due: <%= @dashboard[:totals][:past_due_units] %> units</p>
+        </div>
+
+        <div class="kpi">
+          <p class="label">Next due</p>
+          <p class="value">
+            <% if @dashboard[:totals][:next_due_date] %>
+              <%= @dashboard[:totals][:next_due_date].strftime("%b. %-d, %Y") %>
+            <% else %>
+              None
+            <% end %>
+          </p>
+          <p class="hint"><%= @dashboard[:totals][:next_due_units] %> units</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-18"></div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="page-header" style="margin: 0 0 10px;">
+        <div>
+          <h1 style="font-size:18px;">Contracts</h1>
+          <p class="subtle">Rollup by contract. Click a contract code to view details.</p>
+        </div>
+        <div class="actions">
+          <%= link_to "Add contract", new_program_contract_path(@program), class: "btn btn-sm btn-primary" %>
+        </div>
+      </div>
+
+      <% if @dashboard[:contracts].any? %>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Contract</th>
+                <th class="num">FY</th>
+                <th class="num">Planned</th>
+                <th class="num">Delivered</th>
+                <th class="num">Revenue</th>
+                <th class="num">Cost</th>
+                <th class="num">Margin</th>
+                <th class="num">OTD</th>
+                <th class="num">Past due</th>
+                <th class="actions-cell"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @dashboard[:contracts].each do |r| %>
+                <tr>
+                  <td><%= link_to r[:contract_code], contract_path(r[:id]) %></td>
+                  <td class="num"><%= r[:fiscal_year] %></td>
+                  <td class="num"><%= r[:planned_units] %></td>
+                  <td class="num"><%= r[:units_delivered] %></td>
+                  <td class="num"><%= number_to_currency(r[:revenue_to_date]) %></td>
+                  <td class="num"><%= number_to_currency(r[:cost_to_date]) %></td>
+                  <td class="num"><%= (r[:margin_pct_to_date].to_d * 100).round(1) %>%</td>
+                  <td class="num">
+                    <% if r[:due_to_date_units].to_i > 0 %>
+                      <%= ((r[:on_time_to_date_units].to_d / r[:due_to_date_units].to_d) * 100).round(1) %>%
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                  <td class="num"><%= r[:past_due_units] %></td>
+                  <td class="actions-cell">
+                    <div class="actions">
+                      <%= link_to "View", contract_path(r[:id]), class: "btn btn-sm" %>
+                      <%= link_to "Edit", edit_contract_path(r[:id]), class: "btn btn-sm" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="subtle">No contracts yet for this program.</p>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="card">
+    <div class="card-body">
+      <div class="page-header" style="margin: 0;">
+        <div>
+          <h1 style="font-size:18px;">Contracts</h1>
+          <p class="subtle">No dashboard data yet.</p>
+        </div>
+        <div class="actions">
+          <%= link_to "Add contract", new_program_contract_path(@program), class: "btn btn-sm btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
