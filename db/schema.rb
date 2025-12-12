@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_12_142134) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_12_161601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_142134) do
     t.decimal "other_costs"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["contract_id", "period_start_date", "period_type"], name: "idx_cp_contract_date_type", unique: true
     t.index ["contract_id"], name: "index_contract_periods_on_contract_id"
   end
 
@@ -49,6 +50,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_142134) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_contracts_on_program_id"
+  end
+
+  create_table "delivery_events", force: :cascade do |t|
+    t.bigint "contract_id", null: false
+    t.date "ship_date"
+    t.integer "quantity_shipped"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_id"], name: "index_delivery_events_on_contract_id"
+  end
+
+  create_table "delivery_milestones", force: :cascade do |t|
+    t.bigint "contract_id", null: false
+    t.date "due_date"
+    t.integer "quantity_due"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_id", "due_date"], name: "index_delivery_milestones_on_contract_id_and_due_date", unique: true
+    t.index ["contract_id"], name: "index_delivery_milestones_on_contract_id"
+  end
+
+  create_table "delivery_units", force: :cascade do |t|
+    t.bigint "contract_id", null: false
+    t.string "unit_serial"
+    t.date "ship_date"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_id", "unit_serial"], name: "index_delivery_units_on_contract_id_and_unit_serial", unique: true
+    t.index ["contract_id"], name: "index_delivery_units_on_contract_id"
   end
 
   create_table "programs", force: :cascade do |t|
@@ -203,6 +236,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_142134) do
 
   add_foreign_key "contract_periods", "contracts"
   add_foreign_key "contracts", "programs"
+  add_foreign_key "delivery_events", "contracts"
+  add_foreign_key "delivery_milestones", "contracts"
+  add_foreign_key "delivery_units", "contracts"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -8,6 +8,8 @@ class ContractsController < ApplicationController
   def show
     @contract = Contract.find(params[:id])
     @periods  = @contract.contract_periods.order(:period_start_date)
+    @milestones = @contract.delivery_milestones.order(:due_date)
+    @units = @contract.delivery_units.order(:ship_date, :unit_serial)
   end
 
   def new

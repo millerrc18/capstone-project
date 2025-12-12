@@ -7,7 +7,7 @@
   <div class="actions">
     <%= link_to "Add period", new_contract_contract_period_path(@contract), class: "btn btn-primary" %>
     <%= link_to "Edit", edit_contract_path(@contract), class: "btn" %>
-    <%= link_to "Import periods", new_contract_period_import_path(@contract), class: "btn" %>
+    <%= link_to "Import workbook", new_contract_period_import_path(@contract), class: "btn" %>
   </div>
 </div>
 
@@ -41,6 +41,101 @@
     </p>
   </div>
 </div>
+
+<div class="spacer-18"></div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="page-header" style="margin: 0 0 10px;">
+      <div>
+        <h1 style="font-size:18px;">Delivery milestones</h1>
+        <p class="subtle">Contractual commitments: quantity due by date.</p>
+      </div>
+      <div class="actions">
+        <%= link_to "Add milestone", new_contract_delivery_milestone_path(@contract), class: "btn btn-sm btn-primary" %>
+      </div>
+    </div>
+
+    <% if @milestones.any? %>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Due date</th>
+              <th class="num">Qty due</th>
+              <th>Notes</th>
+              <th class="actions-cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @milestones.each do |m| %>
+              <tr>
+                <td><%= m.due_date&.strftime("%b. %-d, %Y") %></td>
+                <td class="num"><%= m.quantity_due %></td>
+                <td class="wrap"><%= m.notes %></td>
+                <td class="actions-cell">
+                  <div class="actions">
+                    <%= link_to "Edit", edit_delivery_milestone_path(m), class: "btn btn-sm" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="subtle">No milestones yet for this contract.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="spacer-18"></div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="page-header" style="margin: 0 0 10px;">
+      <div>
+        <h1 style="font-size:18px;">Delivered units</h1>
+        <p class="subtle">Unit-level actuals: one row per unit shipped.</p>
+      </div>
+      <div class="actions">
+        <%= link_to "Add delivered unit", new_contract_delivery_unit_path(@contract), class: "btn btn-sm btn-primary" %>
+      </div>
+    </div>
+
+    <% if @units.any? %>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Unit serial</th>
+              <th>Ship date</th>
+              <th>Notes</th>
+              <th class="actions-cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @units.each do |u| %>
+              <tr>
+                <td><%= u.unit_serial %></td>
+                <td><%= u.ship_date&.strftime("%b. %-d, %Y") %></td>
+                <td class="wrap"><%= u.notes %></td>
+                <td class="actions-cell">
+                  <div class="actions">
+                    <%= link_to "Edit", edit_delivery_unit_path(u), class: "btn btn-sm" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="subtle">No delivered units recorded yet.</p>
+    <% end %>
+  </div>
+</div>
+
 
 <div class="spacer-18"></div>
 

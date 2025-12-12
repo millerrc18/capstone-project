@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     resources :contracts, shallow: true do
       resources :contract_periods, shallow: true
       resources :period_imports, only: [:new, :create]
+      resources :delivery_milestones
+      resources :delivery_units
     end
   end
 

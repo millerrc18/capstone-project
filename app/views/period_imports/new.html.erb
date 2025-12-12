@@ -13,9 +13,11 @@
   <div class="card-body">
     <div class="badge">Expected headers (recommended)</div>
     <p class="subtle" style="margin-top:10px;">
-      period_start_date, period_type, units_delivered, revenue_per_unit,
-      hours_bam, rate_bam, hours_eng, rate_eng, hours_mfg_soft, rate_mfg_soft,
-      hours_mfg_hard, rate_mfg_hard, hours_touch, rate_touch, material_cost, other_costs
+      ContractPeriods: your existing list
+
+      DeliveryMilestones: due_date, quantity_due, notes
+
+      DeliveryUnits: unit_serial, ship_date, notes
     </p>
 
     <%= form_with url: contract_period_imports_path(@contract), scope: :period_import, local: true do |f| %>

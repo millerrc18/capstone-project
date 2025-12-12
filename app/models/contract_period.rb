@@ -25,6 +25,7 @@
 #
 # Indexes
 #
+#  idx_cp_contract_date_type              (contract_id,period_start_date,period_type) UNIQUE
 #  index_contract_periods_on_contract_id  (contract_id)
 #
 # Foreign Keys
