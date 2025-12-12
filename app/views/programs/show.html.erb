@@ -1,0 +1,45 @@
+<h1><%= @program.name %></h1>
+
+<p>
+  <strong>Customer:</strong>
+  <%= @program.customer %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @program.description %>
+</p>
+
+<h2>Contracts</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Contract Code</th>
+      <th>Fiscal Year</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Price per Unit</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @contracts.each do |contract| %>
+      <tr>
+        <td><%= contract.contract_code %></td>
+        <td><%= contract.fiscal_year %></td>
+        <td><%= contract.start_date %></td>
+        <td><%= contract.end_date %></td>
+        <td><%= number_to_currency(contract.sell_price_per_unit) %></td>
+        <td>
+          <%= link_to 'Show', contract_path(contract) %> |
+          <%= link_to 'Edit', edit_contract_path(contract) %> |
+          <%= link_to 'Destroy', contract, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'New Contract', new_program_contract_path(@program) %>
+<br>
+<%= link_to 'Back to Programs', programs_path %>

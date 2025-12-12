@@ -1,0 +1,52 @@
+<h1>Contract <%= @contract.contract_code %></h1>
+
+<p><strong>Program:</strong> <%= link_to @contract.program.name, @contract.program %></p>
+<p><strong>Fiscal Year:</strong> <%= @contract.fiscal_year %></p>
+<p><strong>Start Date:</strong> <%= @contract.start_date %></p>
+<p><strong>End Date:</strong> <%= @contract.end_date %></p>
+<p><strong>Planned Quantity:</strong> <%= @contract.planned_quantity %></p>
+<p><strong>Sell Price per Unit:</strong> <%= number_to_currency(@contract.sell_price_per_unit) %></p>
+
+<h2>Summary Metrics</h2>
+<p><strong>Total units delivered:</strong> <%= @contract.total_units_delivered %></p>
+<p><strong>Total revenue:</strong> <%= number_to_currency(@contract.total_revenue) %></p>
+<p><strong>Total cost:</strong> <%= number_to_currency(@contract.total_cost) %></p>
+<p><strong>Average cost per unit:</strong> <%= number_to_currency(@contract.average_cost_per_unit) %></p>
+<p><strong>Average margin per unit:</strong> <%= number_to_currency(@contract.average_margin_per_unit) %></p>
+
+<h2>Cost/Revenue Periods</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Period Start</th>
+      <th>Type</th>
+      <th>Units Delivered</th>
+      <th>Revenue per Unit</th>
+      <th>Total Revenue</th>
+      <th>Total Cost</th>
+      <th>Cost per Unit</th>
+      <th>Margin per Unit</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @periods.each do |period| %>
+      <tr>
+        <td><%= period.period_start_date %></td>
+        <td><%= period.period_type %></td>
+        <td><%= period.units_delivered %></td>
+        <td><%= number_to_currency(period.revenue_per_unit) %></td>
+        <td><%= number_to_currency(period.revenue_total) %></td>
+        <td><%= number_to_currency(period.total_cost) %></td>
+        <td><%= number_to_currency(period.cost_per_unit) %></td>
+        <td><%= number_to_currency(period.margin_per_unit) %></td>
+        <td><%= link_to 'Edit', edit_contract_contract_period_path(@contract, period) %></td>
+        <td><%= link_to 'Destroy', contract_contract_period_path(@contract, period), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Add Period Data', new_contract_contract_period_path(@contract) %> |
+<%= link_to 'Edit Contract', edit_contract_path(@contract) %> |
+<%= link_to 'Back to Program', program_path(@contract.program) %>

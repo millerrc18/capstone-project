@@ -1,0 +1,58 @@
+<%= form_with(model: contract, local: true) do |form| %>
+  <% if contract.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contract.errors.count, "error") %> prohibited this contract from being saved:</h2>
+      <ul>
+      <% contract.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if contract.program_id.blank? %>
+    <div>
+      <%= form.label :program_id, 'Program' %><br>
+      <%= form.collection_select :program_id, Program.all, :id, :name, prompt: 'Select Program' %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :contract_code %><br>
+    <%= form.text_field :contract_code %>
+  </div>
+
+  <div>
+    <%= form.label :fiscal_year %><br>
+    <%= form.number_field :fiscal_year %>
+  </div>
+
+  <div>
+    <%= form.label :start_date %><br>
+    <%= form.date_select :start_date %>
+  </div>
+
+  <div>
+    <%= form.label :end_date %><br>
+    <%= form.date_select :end_date %>
+  </div>
+
+  <div>
+    <%= form.label :planned_quantity %><br>
+    <%= form.number_field :planned_quantity %>
+  </div>
+
+  <div>
+    <%= form.label :sell_price_per_unit %><br>
+    <%= form.text_field :sell_price_per_unit %>
+  </div>
+
+  <div>
+    <%= form.label :notes %><br>
+    <%= form.text_area :notes %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

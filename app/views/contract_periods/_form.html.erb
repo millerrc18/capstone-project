@@ -1,0 +1,96 @@
+<%= form_with(model: [@contract, period], local: true) do |form| %>
+  <% if period.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(period.errors.count, "error") %> prohibited this record from being saved:</h2>
+      <ul>
+      <% period.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :period_start_date %><br>
+    <%= form.date_select :period_start_date %>
+  </div>
+
+  <div>
+    <%= form.label :period_type %><br>
+    <%= form.select :period_type, [['Week','week'], ['Month','month']] %>
+  </div>
+
+  <div>
+    <%= form.label :units_delivered %><br>
+    <%= form.number_field :units_delivered %>
+  </div>
+
+  <div>
+    <%= form.label :revenue_per_unit %><br>
+    <%= form.text_field :revenue_per_unit %>
+  </div>
+
+  <div>
+    <%= form.label :hours_bam, 'Hours BAM' %><br>
+    <%= form.number_field :hours_bam, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :rate_bam, 'Rate BAM' %><br>
+    <%= form.number_field :rate_bam, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :hours_eng, 'Hours ENG' %><br>
+    <%= form.number_field :hours_eng, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :rate_eng, 'Rate ENG' %><br>
+    <%= form.number_field :rate_eng, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :hours_mfg_soft, 'Hours MFG (S)' %><br>
+    <%= form.number_field :hours_mfg_soft, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :rate_mfg_soft, 'Rate MFG (S)' %><br>
+    <%= form.number_field :rate_mfg_soft, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :hours_mfg_hard, 'Hours MFG (H)' %><br>
+    <%= form.number_field :hours_mfg_hard, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :rate_mfg_hard, 'Rate MFG (H)' %><br>
+    <%= form.number_field :rate_mfg_hard, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :hours_touch, 'Hours Touch' %><br>
+    <%= form.number_field :hours_touch, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :rate_touch, 'Rate Touch' %><br>
+    <%= form.number_field :rate_touch, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :material_cost %><br>
+    <%= form.number_field :material_cost, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :other_costs %><br>
+    <%= form.number_field :other_costs, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,9 @@
+<h1>New Contract</h1>
+
+<%= render 'form', contract: @contract %>
+
+<% if @contract.program %>
+  <%= link_to 'Back', program_path(@contract.program) %>
+<% else %>
+  <%= link_to 'Back', programs_path %>
+<% end %>
