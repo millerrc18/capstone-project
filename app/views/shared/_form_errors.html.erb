@@ -1,0 +1,13 @@
+<%# Renders validation errors for a model resource %>
+<% if resource && resource.errors.any? %>
+  <div class="form-errors">
+    <div class="form-errors-title">
+      <%= pluralize(resource.errors.count, "error") %> prevented this from being saved:
+    </div>
+    <ul>
+      <% resource.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

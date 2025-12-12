@@ -32,95 +32,48 @@ class Contract < ApplicationRecord
   validates :contract_code, :start_date, :end_date, :sell_price_per_unit, presence: true
 
   # aggregated helpers
-  def total_units_delivered
-    contract_periods.sum(:units_delivered).to_i
+  def units_delivered_to_date(as_of: Date.current)
+    delivery_units.where.not(ship_date: nil)
+                  .where("ship_date <= ?", as_of)
+                  .count
   end
 
   def total_revenue
     contract_periods.sum { |p| p.revenue_total.to_f }
   end
 
+  def total_units_delivered
+    units_delivered_to_date
+  end
+
+  def revenue_to_date(as_of: Date.current)
+    units_delivered_to_date(as_of:) * sell_price_per_unit.to_d
+  end
+
+  def total_revenue
+    revenue_to_date
+  end
+
+  def cost_to_date
+    contract_periods.sum(&:total_cost).to_d
+  end
+
   def total_cost
-    contract_periods.sum { |p| p.total_cost.to_f }
+    cost_to_date
   end
 
   def total_margin
     total_revenue - total_cost
   end
 
-  def average_cost_per_unit
-    units = total_units_delivered
-    return 0 if units == 0
-    total_cost / units
+  def avg_cost_per_unit
+    return 0.to_d if total_units_delivered.to_i == 0
+    total_cost / total_units_delivered
   end
 
-  def average_margin_per_unit
-    units = total_units_delivered
-    return 0 if units == 0
-    total_margin / units
-  end
-
-  # Optional aliases if you ever used different names elsewhere
-  alias_method :avg_cost_per_unit, :average_cost_per_unit
-  alias_method :avg_margin_per_unit, :average_margin_per_unit
-
-  def total_due_units
-    delivery_milestones.sum(:quantity_due).to_i
-  end
-
-  def total_shipped_units
-    delivery_events.sum(:quantity_shipped).to_i
-  end
-
-  # Returns an array of hashes:
-  # [{ milestone: <DeliveryMilestone>, on_time_qty: 2, late_qty: 1 }, ...]
-  def milestone_performance
-    milestones = delivery_milestones.order(:due_date).to_a
-    events = delivery_events.order(:ship_date).to_a
-
-    # Precompute cumulative shipped by date
-    shipped_by_date = Hash.new(0)
-    events.each { |e| shipped_by_date[e.ship_date] += e.quantity_shipped.to_i }
-
-    cumulative = 0
-    shipped_cum_by_date = {}
-    shipped_by_date.keys.sort.each do |d|
-      cumulative += shipped_by_date[d]
-      shipped_cum_by_date[d] = cumulative
-    end
-
-    # Helper: shipped up to date
-    shipped_upto = lambda do |date|
-      # find the last date <= date
-      key = shipped_cum_by_date.keys.select { |d| d <= date }.max
-      key ? shipped_cum_by_date[key] : 0
-    end
-
-    allocated_on_time = 0
-    milestones.map do |m|
-      shipped_by_due = shipped_upto.call(m.due_date)
-      available_for_this_due = [shipped_by_due - allocated_on_time, 0].max
-      on_time = [m.quantity_due.to_i, available_for_this_due].min
-      late = m.quantity_due.to_i - on_time
-
-      allocated_on_time += on_time
-
-      { milestone: m, on_time_qty: on_time, late_qty: late }
-    end
-  end
-
-  def on_time_units
-    milestone_performance.sum { |r| r[:on_time_qty] }
-  end
-
-  def late_units
-    milestone_performance.sum { |r| r[:late_qty] }
-  end
-
-  def on_time_rate
-    due = total_due_units
-    return 0.0 if due == 0
-    on_time_units.to_f / due
+  def avg_margin_per_unit
+    return 0.to_d if total_units_delivered.to_i == 0
+    total_margin / total_units_delivered
   end
 
 
