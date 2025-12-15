@@ -23,4 +23,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :programs, dependent: :destroy
+
+    def admin?
+    raw = ENV["ADMIN_EMAILS"].presence || ENV["ADMIN_EMAIL"].to_s
+    admins = raw.split(/[,\s]+/).map { |e| e.strip.downcase }.reject(&:blank?)
+    admins.include?(email.to_s.downcase)
+  end
 end
