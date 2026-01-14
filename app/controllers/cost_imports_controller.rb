@@ -29,8 +29,13 @@ class CostImportsController < ApplicationController
 
   private
 
-  def set_contract
-    @contract = Contract.find(params[:contract_id])
+  def set_scope
+    if params[:contract_id].present?
+      @contract = Contract.find(params[:contract_id])
+      @program = @contract.program
+    elsif params[:program_id].present?
+      @program = Program.find(params[:program_id])
+    end
 
     return if @contract.program.user_id == current_user.id
 
@@ -46,5 +51,29 @@ class CostImportsController < ApplicationController
     end
 
     "Per contract: #{summary.join(", ")}."
+  end
+
+  def new_cost_import_path
+    return new_contract_cost_import_path(@contract) if @contract.present?
+    return new_program_cost_import_path(@program) if @program.present?
+
+    programs_path
+  end
+
+  def import_redirect_path
+    return contract_path(@contract) if @contract.present?
+    return program_path(@program) if @program.present?
+
+    programs_path
+  end
+
+  def import_notice(result)
+    base = "Costs imported. Created: #{result[:created]}, updated: #{result[:updated]}."
+    return base if result[:per_contract].blank?
+
+    breakdown = result[:per_contract].map do |code, counts|
+      "#{code} (#{counts[:created]} created, #{counts[:updated]} updated)"
+    end.join(", ")
+    "#{base} By contract: #{breakdown}."
   end
 end

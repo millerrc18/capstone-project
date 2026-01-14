@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :cost_imports, only: [:new, :create]
 
   resources :programs do
+    resources :cost_imports, only: [:new, :create]
     resources :contracts, shallow: true do
       resources :contract_periods, shallow: true
       resources :delivery_milestones

@@ -13,9 +13,10 @@ class CostImportService
 
   ALLOWED_PERIOD_TYPES = %w[week month].freeze
 
-  def initialize(user:, contract:, file:)
+  def initialize(user:, contract: nil, program: nil, file:)
     @user = user
     @contract = contract
+    @program = program
     @file = file
   end
 
