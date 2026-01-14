@@ -13,9 +13,10 @@ class CostImportService
 
   ALLOWED_PERIOD_TYPES = %w[week month].freeze
 
-  def initialize(user:, contract:, file:)
+  def initialize(user:, contract: nil, program: nil, file:)
     @user = user
     @contract = contract
+    @program = program
     @file = file
   end
 
@@ -28,6 +29,7 @@ class CostImportService
 
     created = 0
     updated = 0
+    per_contract = Hash.new { |hash, key| hash[key] = { created: 0, updated: 0 } }
 
     ContractPeriod.transaction do
       2.upto(sheet.last_row) do |row_num|
@@ -39,7 +41,7 @@ class CostImportService
         period_start_date = parse_date(cell(row, index["period_start_date"]))
         notes = cell(row, index["notes"]).to_s.strip
 
-        validate_contract_code!(contract_code, row_num)
+        contract = resolve_contract!(contract_code, row_num)
 
         if period_type.empty? || !ALLOWED_PERIOD_TYPES.include?(period_type)
           raise "Row #{row_num}: period_type must be 'week' or 'month'."
@@ -50,7 +52,7 @@ class CostImportService
         end
 
         record = ContractPeriod.find_or_initialize_by(
-          contract_id: @contract.id,
+          contract_id: contract.id,
           period_type: period_type,
           period_start_date: period_start_date
         )
@@ -78,18 +80,32 @@ class CostImportService
 
         record.save!
 
-        was_new ? created += 1 : updated += 1
+        if was_new
+          created += 1
+          per_contract[contract.contract_code][:created] += 1
+        else
+          updated += 1
+          per_contract[contract.contract_code][:updated] += 1
+        end
       end
     end
 
-    { created: created, updated: updated }
+    { created: created, updated: updated, per_contract: per_contract }
   end
 
   private
 
   def authorize!
-    unless @contract.program.user_id == @user.id
-      raise "Not authorized for this contract."
+    if @contract.present?
+      unless @contract.program.user_id == @user.id
+        raise "Not authorized for this contract."
+      end
+    elsif @program.present?
+      unless @program.user_id == @user.id
+        raise "Not authorized for this program."
+      end
+    else
+      raise "Program or contract is required for import."
     end
   end
 
@@ -136,10 +152,21 @@ class CostImportService
     raise "Invalid number: #{v}"
   end
 
-  def validate_contract_code!(contract_code, row_num)
-    return if contract_code.empty?
-    return if contract_code == @contract.contract_code
+  def resolve_contract!(contract_code, row_num)
+    if @contract.present?
+      return @contract if contract_code.empty?
+      return @contract if contract_code == @contract.contract_code
 
-    raise "Row #{row_num}: contract_code '#{contract_code}' does not match this contract (#{@contract.contract_code})."
+      raise "Row #{row_num}: contract_code '#{contract_code}' does not match this contract (#{@contract.contract_code})."
+    end
+
+    if contract_code.empty?
+      raise "Row #{row_num}: contract_code is required."
+    end
+
+    contract = @program.contracts.find_by(contract_code: contract_code)
+    raise "Row #{row_num}: contract_code '#{contract_code}' not found in this program." unless contract
+
+    contract
   end
 end
