@@ -90,8 +90,36 @@ body {
     radial-gradient(900px 500px at 90% 0%, rgba(34, 211, 238, 0.14), transparent 55%),
     var(--bg);
   color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-base);
   line-height: 1.45;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: var(--font-base);
+}
+
+input::placeholder,
+textarea::placeholder,
+::placeholder {
+  font-family: var(--font-base);
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  font-family: var(--font-base);
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  font-family: var(--font-base);
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  font-family: var(--font-base);
 }
 
 a { color: inherit; text-decoration: none; }
