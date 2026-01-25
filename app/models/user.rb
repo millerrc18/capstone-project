@@ -29,6 +29,8 @@ class User < ApplicationRecord
 
   validates :theme, inclusion: { in: THEME_OPTIONS }
   validates :palette, inclusion: { in: PALETTE_OPTIONS }
+  validates :first_name, :last_name, :job_title, :company, length: { maximum: 120 }, allow_blank: true
+  validates :bio, length: { maximum: 600 }, allow_blank: true
 
   def admin?
     raw = ENV["ADMIN_EMAILS"].presence || ENV["ADMIN_EMAIL"].to_s

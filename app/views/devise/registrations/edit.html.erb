@@ -1,26 +1,62 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<h2>Profile & account</h2>
+<p class="subtle">Keep your profile details and preferences up to date.</p>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= f.error_notification %>
 
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
+  <div class="card">
+    <div class="card-body">
+      <h3>Profile details</h3>
+      <p class="subtle">Add the details teammates should see on your account.</p>
+      <div class="profile-grid">
+        <%= f.input :first_name %>
+        <%= f.input :last_name %>
+        <%= f.input :job_title, label: "Job title" %>
+        <%= f.input :company %>
+        <div class="full">
+          <%= f.input :bio, as: :text, input_html: { rows: 4 } %>
+        </div>
+      </div>
+    </div>
 
-    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
-    <% end %>
+    <div class="card-body">
+      <h3>Theme & palette</h3>
+      <p class="subtle">Choose how the application looks for you.</p>
+      <div class="profile-grid">
+        <%= f.input :theme,
+                    collection: User::THEME_OPTIONS.map { |option| [option.titleize, option] },
+                    include_blank: false %>
+        <%= f.input :palette,
+                    collection: User::PALETTE_OPTIONS.map { |option| [option.titleize, option] },
+                    include_blank: false %>
+      </div>
+    </div>
 
-    <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
-                required: true,
-                input_html: { autocomplete: "current-password" } %>
+    <div class="card-body">
+      <h3>Security</h3>
+      <p class="subtle">Update your sign-in email or password.</p>
+      <div class="profile-grid">
+        <%= f.input :email, required: true, autofocus: true %>
+        <%= f.input :password,
+                    hint: "leave it blank if you don't want to change it",
+                    required: false,
+                    input_html: { autocomplete: "new-password" } %>
+        <%= f.input :password_confirmation,
+                    required: false,
+                    input_html: { autocomplete: "new-password" } %>
+        <div class="full">
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+          <% end %>
+        </div>
+        <div class="full">
+          <%= f.input :current_password,
+                      hint: "we need your current password to confirm your changes",
+                      required: true,
+                      input_html: { autocomplete: "current-password" } %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="form-actions">
