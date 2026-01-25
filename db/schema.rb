@@ -249,6 +249,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_20_120000) do
     t.datetime "remember_created_at"
     t.string "theme", default: "light", null: false
     t.string "palette", default: "blue", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "job_title"
+    t.string "company"
+    t.text "bio"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
