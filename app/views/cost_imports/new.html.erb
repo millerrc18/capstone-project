@@ -10,6 +10,14 @@
         <%= f.label :file, "Excel file" %>
         <%= f.file_field :file, class: "input", accept: ".xlsx" %>
         <p class="hint">Tip: contract_code is required and period_type must be week or month.</p>
+        <p class="hint">
+          Download template:
+          <%= link_to "costs.xlsx", "/templates/costs.xlsx" %>
+        </p>
+        <p class="hint">
+          Required headers:
+          <code><%= CostImportService::REQUIRED_HEADERS.join(", ") %></code>
+        </p>
       </div>
 
       <div class="form-actions">

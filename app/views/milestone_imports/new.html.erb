@@ -10,6 +10,14 @@
         <%= f.label :file, "Excel file" %>
         <%= f.file_field :file, class: "input", accept: ".xlsx" %>
         <p class="hint">milestone_ref should be stable (ex: FY25-JAN) so amended dates update the right row.</p>
+        <p class="hint">
+          Download template:
+          <%= link_to "contract_workbook.xlsx", "/templates/contract_workbook.xlsx" %>
+        </p>
+        <p class="hint">
+          Required headers:
+          <code><%= MilestoneImportService::REQUIRED_HEADERS.join(", ") %></code>
+        </p>
       </div>
 
       <div class="form-actions">
