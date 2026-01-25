@@ -6,6 +6,9 @@ class ContractWorkbookImporter
   SHEET_PERIODS    = "ContractPeriods"
   SHEET_MILESTONES = "DeliveryMilestones"
   SHEET_UNITS      = "DeliveryUnits"
+  REQUIRED_PERIOD_HEADERS = %w[period_start_date period_type].freeze
+  REQUIRED_MILESTONE_HEADERS = %w[due_date quantity_due].freeze
+  REQUIRED_UNIT_HEADERS = %w[unit_serial].freeze
 
   def initialize(contract:, file:)
     @contract = contract
@@ -88,8 +91,7 @@ class ContractWorkbookImporter
     sheet = xlsx.sheet(SHEET_PERIODS)
     idx = header_index_map(sheet)
 
-    required = %w[period_start_date period_type]
-    missing = required.reject { |h| idx.key?(h) }
+    missing = REQUIRED_PERIOD_HEADERS.reject { |h| idx.key?(h) }
     return ["#{SHEET_PERIODS}: missing required column(s): #{missing.join(', ')}"] if missing.any?
 
     seen_keys = {}
@@ -174,8 +176,7 @@ class ContractWorkbookImporter
     sheet = xlsx.sheet(SHEET_MILESTONES)
     idx = header_index_map(sheet)
 
-    required = %w[due_date quantity_due]
-    missing = required.reject { |h| idx.key?(h) }
+    missing = REQUIRED_MILESTONE_HEADERS.reject { |h| idx.key?(h) }
     return ["#{SHEET_MILESTONES}: missing required column(s): #{missing.join(', ')}"] if missing.any?
 
     seen_keys = {}
@@ -233,8 +234,7 @@ class ContractWorkbookImporter
     sheet = xlsx.sheet(SHEET_UNITS)
     idx = header_index_map(sheet)
 
-    required = %w[unit_serial]
-    missing = required.reject { |h| idx.key?(h) }
+    missing = REQUIRED_UNIT_HEADERS.reject { |h| idx.key?(h) }
     return ["#{SHEET_UNITS}: missing required column(s): #{missing.join(', ')}"] if missing.any?
 
     seen_keys = {}

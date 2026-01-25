@@ -9,6 +9,14 @@
       <div class="field">
         <%= f.label :file, "Excel file" %>
         <%= f.file_field :file, class: "input", accept: ".xlsx" %>
+        <p class="hint">
+          Download template:
+          <%= link_to "contract_workbook.xlsx", "/templates/contract_workbook.xlsx" %>
+        </p>
+        <p class="hint">
+          Required headers:
+          <code><%= DeliveryUnitImportService::REQUIRED_HEADERS.join(", ") %></code>
+        </p>
       </div>
 
       <div class="form-actions">
