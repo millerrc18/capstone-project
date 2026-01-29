@@ -37,6 +37,15 @@ class ContractPeriod < ApplicationRecord
   belongs_to :contract
 
   validates :period_start_date, :period_type, :revenue_per_unit, presence: true
+  validates :period_type, inclusion: { in: %w[week month] }
+  validates :hours_bam, :hours_eng, :hours_mfg_hard, :hours_mfg_soft, :hours_touch,
+            numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :rate_bam, :rate_eng, :rate_mfg_hard, :rate_mfg_soft, :rate_touch,
+            numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :material_cost, :other_costs, :revenue_per_unit,
+            numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :units_delivered,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
   # cost calculations
   def total_labor_cost
@@ -53,16 +62,16 @@ class ContractPeriod < ApplicationRecord
 
 
   def revenue_total
-    units_delivered.to_i.to_d * revenue_per_unit.to_d
+    units_delivered.to_i * revenue_per_unit.to_d
   end
 
   def cost_per_unit
     return 0 if units_delivered.to_i.zero?
-    total_cost / units_delivered
+    total_cost / units_delivered.to_d
   end
 
   def margin_per_unit
-    revenue_per_unit - cost_per_unit
+    revenue_per_unit.to_d - cost_per_unit
   end
 
   def total_margin
