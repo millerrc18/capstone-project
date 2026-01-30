@@ -22,7 +22,15 @@ default: &default
 
 development:
   <<: *default
-  url: <%= ENV.fetch("DATABASE_URL").gsub("?", "_development?") %>
+  <% require "uri" %>
+  <% dev_database_url = ENV["DATABASE_URL"] %>
+  <% if dev_database_url.present? %>
+  <% dev_uri = URI.parse(dev_database_url) %>
+  <% dev_uri.path = "#{dev_uri.path}_development" %>
+  url: <%= dev_uri.to_s %>
+  <% else %>
+  url: postgres://localhost/rails_8_template_development
+  <% end %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.

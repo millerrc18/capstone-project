@@ -1,0 +1,54 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-badge" aria-hidden="true"></span>
+      <span class="sidebar-label">PM Copilot</span>
+    </div>
+
+    <button class="sidebar-toggle focus-ring" data-action="sidebar#toggle" aria-label="Toggle sidebar">
+      ⟷
+    </button>
+  </div>
+
+  <div class="sidebar-search">
+    <span aria-hidden="true">🔍</span>
+    <input type="text" placeholder="Search..." aria-label="Search" />
+    <span class="hotkey">⌘ F</span>
+  </div>
+
+  <div>
+    <p class="sidebar-section">Workspace</p>
+    <nav class="sidebar-nav">
+      <%= render "shared/ui/nav_item", label: "Programs", url: programs_path, icon: "📁", active: current_page?(programs_path) %>
+      <%= render "shared/ui/nav_item", label: "Docs", url: docs_path, icon: "📄", active: current_page?(docs_path) %>
+      <%= render "shared/ui/nav_item", label: "Contracts", url: programs_path, icon: "🧾", active: false %>
+    </nav>
+  </div>
+
+  <div>
+    <p class="sidebar-section">Imports</p>
+    <nav class="sidebar-nav">
+      <%= render "shared/ui/nav_item", label: "Costs", url: programs_path, icon: "💸", active: false %>
+      <%= render "shared/ui/nav_item", label: "Milestones", url: programs_path, icon: "🚩", active: false %>
+      <%= render "shared/ui/nav_item", label: "Delivery units", url: programs_path, icon: "🚚", active: false %>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="promo-card">
+      <div class="ui-badge">Boost with AI</div>
+      <h3 class="promo-title">Upgrade to Pro</h3>
+      <p class="promo-text">Unlock smart forecasting, risk alerts, and instant summaries.</p>
+      <%= render "shared/ui/button", label: "Upgrade to Pro", variant: "primary", url: "#" %>
+    </div>
+
+    <div class="user-chip">
+      <div class="user-avatar" aria-hidden="true"></div>
+      <div class="user-details">
+        <div class="user-name"><%= current_user.first_name.presence || "Account" %></div>
+        <div class="user-email"><%= current_user.email %></div>
+      </div>
+      <span aria-hidden="true">⌄</span>
+    </div>
+  </div>
+</aside>

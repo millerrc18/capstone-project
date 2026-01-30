@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
-  skip_forgery_protection
+  protect_from_forgery with: :exception
 
   protected
 
@@ -9,5 +9,15 @@ class ApplicationController < ActionController::Base
     profile_fields = %i[first_name last_name job_title company bio theme palette]
     devise_parameter_sanitizer.permit(:sign_up, keys: profile_fields)
     devise_parameter_sanitizer.permit(:account_update, keys: profile_fields)
+  end
+
+  def authorize_program_owner!(program)
+    return if program.user_id == current_user.id
+
+    redirect_to programs_path, alert: "Not authorized."
+  end
+
+  def authorize_contract_owner!(contract)
+    authorize_program_owner!(contract.program)
   end
 end

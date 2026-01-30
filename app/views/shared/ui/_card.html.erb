@@ -1,0 +1,23 @@
+<div class="glass-card">
+  <div class="glass-card-body">
+    <% if local_assigns[:icon].present? %>
+      <div class="card-icon"><%= local_assigns[:icon] %></div>
+    <% end %>
+
+    <% if local_assigns[:title].present? %>
+      <h3 class="card-title"><%= local_assigns[:title] %></h3>
+    <% end %>
+
+    <% if local_assigns[:description].present? %>
+      <p class="card-meta"><%= local_assigns[:description] %></p>
+    <% end %>
+
+    <%= yield if block_given? %>
+
+    <% if local_assigns[:footer].present? %>
+      <div class="card-footer">
+        <%= local_assigns[:footer] %>
+      </div>
+    <% end %>
+  </div>
+</div>

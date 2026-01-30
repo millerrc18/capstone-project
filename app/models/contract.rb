@@ -29,6 +29,7 @@ class Contract < ApplicationRecord
   has_many :delivery_units, dependent: :destroy
 
   validates :contract_code, :start_date, :end_date, :sell_price_per_unit, presence: true
+  validates :contract_code, uniqueness: true
 
   # aggregated helpers
   def units_delivered_to_date(as_of: Date.current)

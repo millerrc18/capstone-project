@@ -1,10 +1,11 @@
-<% theme = current_user&.theme.presence || "light" %>
+<% theme = current_user&.theme.presence || (user_signed_in? ? "dark" : "light") %>
 <% palette = current_user&.palette.presence || "blue" %>
 <!DOCTYPE html>
 <html data-theme="<%= theme %>" data-palette="<%= palette %>">
   <head>
     <title>PM Copilot</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#0B0D11">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -13,39 +14,43 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <% home_path = user_signed_in? ? programs_path : new_user_session_path %>
+  <body class="<%= user_signed_in? ? "app-shell-body" : "" %>">
+    <% if user_signed_in? %>
+      <div class="app-shell" data-controller="sidebar">
+        <%= render "shared/sidebar" %>
 
-        <%= link_to(home_path, class: "brand") do %>
-          <span class="brand-badge" aria-hidden="true"></span>
-          <span>PM Copilot</span>
+        <div class="main-shell">
+          <%= render "shared/topbar" %>
+
+          <div class="shell-content">
+            <%= render "shared/flash" %>
+            <%= yield %>
+          </div>
+        </div>
+
+        <% if content_for?(:right_panel) %>
+          <%= render "shared/right_panel" %>
         <% end %>
+      </div>
+    <% else %>
+      <header class="topbar">
+        <div class="container topbar-inner">
+          <%= link_to(new_user_session_path, class: "brand") do %>
+            <span class="brand-badge" aria-hidden="true"></span>
+            <span>PM Copilot</span>
+          <% end %>
 
-        <div class="topbar-actions">
-          <% if user_signed_in? %>
-            <span class="subtle topbar-email"><%= current_user.email %></span>
-
-            <%= link_to "Account", edit_user_registration_path, class: "btn btn-sm" %>
-            <%= link_to "Programs", programs_path, class: "btn btn-sm" %>
-            <%= link_to "New program", new_program_path, class: "btn btn-primary btn-sm" %>
-
-            <%= button_to "Sign out",
-                          destroy_user_session_path,
-                          method: :delete,
-                          class: "btn btn-sm" %>
-          <% else %>
+          <div class="topbar-actions">
             <%= link_to "Sign in", new_user_session_path, class: "btn btn-sm btn-primary" %>
             <%= link_to "Sign up", new_user_registration_path, class: "btn btn-sm" %>
-          <% end %>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <main class="container main">
-      <%= render "shared/flash" %>
-      <%= yield %>
-    </main>
+      <main class="container main">
+        <%= render "shared/flash" %>
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

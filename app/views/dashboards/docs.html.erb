@@ -1,0 +1,88 @@
+<% content_for :page_title, "Docs" %>
+<% content_for :page_subtitle, "Bring your knowledge base into a unified workspace." %>
+<% content_for :toolbar do %>
+  <%= render "shared/ui/button", label: "New doc", variant: "primary", url: "#" %>
+<% end %>
+
+<% content_for :right_panel do %>
+  <div class="panel-header">
+    <h3 class="card-title">Recent files</h3>
+    <div class="panel-actions">
+      <%= render "shared/ui/button", label: "⋯", variant: "icon", url: "#" %>
+      <%= render "shared/ui/button", label: "↻", variant: "icon", url: "#" %>
+    </div>
+  </div>
+
+  <div class="right-panel-item">
+    <strong>Design system updates</strong>
+    <div class="right-panel-meta">Shared by Ava · 1.2 MB</div>
+    <div class="right-panel-meta">Created 2 hours ago</div>
+    <%= render "shared/ui/button", label: "Details", variant: "ghost", url: "#" %>
+  </div>
+
+  <div class="right-panel-item">
+    <strong>Program kickoff notes</strong>
+    <div class="right-panel-meta">Shared by Miles · 640 KB</div>
+    <div class="right-panel-meta">Created yesterday</div>
+    <%= render "shared/ui/button", label: "Details", variant: "ghost", url: "#" %>
+  </div>
+
+  <div class="right-panel-item">
+    <strong>Vendor SOPs</strong>
+    <div class="right-panel-meta">Shared by Carmen · 320 KB</div>
+    <div class="right-panel-meta">Created 2 days ago</div>
+    <%= render "shared/ui/button", label: "Details", variant: "ghost", url: "#" %>
+  </div>
+<% end %>
+
+<div class="card-grid">
+  <%= render "shared/ui/card", icon: "📌", title: "Quick start", description: "Connect your workspace and start organizing milestones." do %>
+    <%= render "shared/ui/button", label: "Connect", variant: "ghost", url: "#" %>
+  <% end %>
+
+  <%= render "shared/ui/card", icon: "🗂️", title: "Program templates", description: "Jump into the most common delivery workflows." do %>
+    <%= render "shared/ui/button", label: "Browse", variant: "ghost", url: "#" %>
+  <% end %>
+
+  <%= render "shared/ui/card", icon: "✨", title: "AI summaries", description: "Let Copilot create weekly status briefs automatically." do %>
+    <%= render "shared/ui/button", label: "Enable", variant: "ghost", url: "#" %>
+  <% end %>
+
+  <%= render "shared/ui/card", icon: "📈", title: "Portfolio analytics", description: "Monitor program health with real-time rollups." do %>
+    <%= render "shared/ui/button", label: "Open", variant: "ghost", url: "#" %>
+  <% end %>
+
+  <%= render "shared/ui/card", icon: "🧭", title: "Risk tracker", description: "Stay ahead of delays with targeted alerts." do %>
+    <%= render "shared/ui/button", label: "Review", variant: "ghost", url: "#" %>
+  <% end %>
+
+  <%= render "shared/ui/card", icon: "🔗", title: "Integrations", description: "Sync deliverables with your CRM and ticketing tools." do %>
+    <%= render "shared/ui/button", label: "Connect", variant: "ghost", url: "#" %>
+  <% end %>
+</div>
+
+<div class="glass-card">
+  <div class="glass-card-body">
+    <div class="section-header">
+      <div>
+        <h3 class="card-title">Shortcuts</h3>
+        <p class="card-meta">Pin your most-used actions for quick access.</p>
+      </div>
+      <%= render "shared/ui/button", label: "Manage", variant: "ghost", url: "#" %>
+    </div>
+    <div class="section-grid shortcut-grid">
+      <div class="right-panel-item">
+        <strong>New report</strong>
+        <div class="right-panel-meta">Generate KPI digest</div>
+      </div>
+      <div class="right-panel-item">
+        <strong>Import template</strong>
+        <div class="right-panel-meta">Upload costs + units</div>
+      </div>
+      <div class="right-panel-item">
+        <strong>Invite teammate</strong>
+        <div class="right-panel-meta">Add owners to programs</div>
+      </div>
+    </div>
+  </div>
+</div>

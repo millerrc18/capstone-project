@@ -1,0 +1,5 @@
+<% classes = ["nav-pill", "focus-ring", (local_assigns[:active] ? "is-active" : nil)].compact.join(" ") %>
+<%= link_to local_assigns[:url], class: classes do %>
+  <span class="nav-pill-icon" aria-hidden="true"><%= local_assigns[:icon] %></span>
+  <span class="sidebar-label"><%= local_assigns[:label] %></span>
+<% end %>

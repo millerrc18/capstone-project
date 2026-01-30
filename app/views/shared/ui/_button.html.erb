@@ -1,0 +1,13 @@
+<% variant_class = case (local_assigns[:variant] || "secondary")
+   when "primary" then "btn btn-primary"
+   when "ghost" then "btn btn-ghost"
+   when "icon" then "btn btn-ghost btn-icon"
+   else "btn"
+   end
+%>
+
+<% if local_assigns[:url].present? %>
+  <%= link_to local_assigns[:label], local_assigns[:url], class: "#{variant_class} focus-ring" %>
+<% else %>
+  <%= button_tag local_assigns[:label], type: "button", class: "#{variant_class} focus-ring" %>
+<% end %>

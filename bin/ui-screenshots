@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bundle exec rspec spec/system/ui_responsive_screenshots_spec.rb
+
+echo "UI screenshots saved to tmp/screenshots/ui"

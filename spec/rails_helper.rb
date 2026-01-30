@@ -7,7 +7,9 @@ require "capybara/rspec"
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
+require "support/capybara"
 require "support/headless_chrome"
+require "support/ui_screenshot_helper"
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
