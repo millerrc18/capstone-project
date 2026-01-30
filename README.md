@@ -22,4 +22,36 @@ PM Copilot is a Rails app that helps program teams track program financials and 
 - Contractual due quantities and on-time delivery metrics come from `DeliveryMilestone` records.
 - Revenue and cost rollups come from `ContractPeriod` records.
 
+## UI screenshots
+
+Generate responsive UI screenshots for Apple device viewports:
+
+```bash
+bin/ui-screenshots
+```
+
+Screenshots are written to `tmp/screenshots/ui/<page>/<device>.png`.
+
+## Manual QA checklist (first release)
+
+Functional
+- Sign up, sign in, sign out.
+- Create program, edit program.
+- Create contract under a program.
+- Import delivery units, costs, milestones with a small sample file.
+- Verify dashboard totals update correctly after import.
+
+UI behavior
+- Sidebar collapse toggle works and persists after refresh.
+- Mobile off-canvas sidebar opens/closes.
+- Keyboard navigation: tab order makes sense, focus ring visible.
+- Buttons have 44x44 targets on iPhone viewports.
+- Right panel collapses appropriately on iPad and iPhone.
+
+Safari specific
+- iOS Safari: no content hidden behind notch or home indicator (safe area respected).
+- Scroll works smoothly inside main content.
+- Backdrop blur renders correctly or degrades gracefully.
+- No 100vh jump when browser chrome shows/hides (uses 100dvh).
+
 All files are covered by the MIT license, see [LICENSE.txt](LICENSE.txt).

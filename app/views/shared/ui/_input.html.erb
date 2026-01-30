@@ -1,0 +1,7 @@
+<div class="input-search">
+  <span aria-hidden="true">🔍</span>
+  <input type="text" placeholder="<%= local_assigns[:placeholder] || "Search..." %>" aria-label="Search" />
+  <% if local_assigns[:hotkey].present? %>
+    <span class="hotkey"><%= local_assigns[:hotkey] %></span>
+  <% end %>
+</div>

@@ -20,8 +20,6 @@ class DeliveryUnitImportsController < ApplicationController
 
   def set_contract
     @contract = Contract.find(params[:contract_id])
-    unless @contract.program.user_id == current_user.id
-      redirect_to programs_path, alert: "Not authorized."
-    end
+    authorize_contract_owner!(@contract)
   end
 end

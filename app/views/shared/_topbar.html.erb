@@ -1,0 +1,36 @@
+<div class="shell-topbar">
+  <div>
+    <h1 class="shell-title"><%= content_for?(:page_title) ? yield(:page_title) : "Dashboard" %></h1>
+    <% if content_for?(:page_subtitle) %>
+      <p class="shell-subtitle"><%= yield(:page_subtitle) %></p>
+    <% end %>
+  </div>
+
+  <div class="shell-toolbar">
+    <button class="btn btn-ghost btn-icon focus-ring" data-action="sidebar#toggleMobile" aria-label="Toggle navigation">
+      ☰
+    </button>
+
+    <div class="dropdown" data-controller="dropdown">
+      <button class="btn btn-ghost focus-ring" data-action="dropdown#toggle" aria-expanded="false">
+        View: Timeline
+        <span aria-hidden="true">⌄</span>
+      </button>
+      <div class="dropdown-menu" role="menu">
+        <a href="#" role="menuitem">Timeline</a>
+        <a href="#" role="menuitem">Board</a>
+        <a href="#" role="menuitem">List</a>
+      </div>
+    </div>
+
+    <%= render "shared/ui/input", placeholder: "Search", hotkey: "⌘ K" %>
+
+    <%= render "shared/ui/button", label: "Filter", variant: "ghost", url: "#" %>
+    <%= render "shared/ui/button", label: "⚡", variant: "icon", url: "#" %>
+    <%= render "shared/ui/button", label: "🔔", variant: "icon", url: "#" %>
+
+    <% if content_for?(:toolbar) %>
+      <%= yield(:toolbar) %>
+    <% end %>
+  </div>
+</div>

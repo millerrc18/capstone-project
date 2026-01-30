@@ -1,48 +1,51 @@
-<div class="page-header">
-  <div>
-    <h1>Programs</h1>
-    <p class="subtle">A single source of truth for contracts, costs, and unit economics.</p>
-  </div>
+<% content_for :page_title, "Programs" %>
+<% content_for :page_subtitle, "A single source of truth for contracts, costs, and unit economics." %>
+<% content_for :toolbar do %>
+  <%= render "shared/ui/button", label: "New program", variant: "primary", url: new_program_path %>
+<% end %>
 
-  <div class="actions">
-    <%= link_to "New program", new_program_path, class: "btn btn-primary" %>
+<div class="glass-card">
+  <div class="glass-card-body">
+    <div class="programs-summary">
+      <div>
+        <%= render "shared/ui/chip", label: "Portfolio" %>
+        <p class="card-meta programs-summary-text">Review program health, contracts, and activity in one place.</p>
+      </div>
+      <%= render "shared/ui/button", label: "Create program", variant: "ghost", url: new_program_path %>
+    </div>
   </div>
 </div>
 
-<div class="card">
-  <div class="card-body">
-    <% if @programs.any? %>
-      <table class="table">
+<% if @programs.any? %>
+  <div class="glass-card">
+    <div class="glass-card-body">
+      <table class="shell-table">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Program</th>
             <th>Customer</th>
-            <th>Description</th>
+            <th>Highlights</th>
             <th></th>
           </tr>
         </thead>
-
         <tbody>
           <% @programs.each do |program| %>
             <tr>
-              <td><%= link_to program.name, program %></td>
-              <td><%= program.customer %></td>
-              <td class="subtle"><%= truncate(program.description.to_s, length: 80) %></td>
               <td>
-                <div class="actions">
-                  <%= link_to "View", program, class: "btn btn-sm" %>
-                  <%= link_to "Edit", edit_program_path(program), class: "btn btn-sm" %>
-                </div>
+                <strong><%= link_to program.name, program %></strong><br>
+                <span class="shell-subtitle">Updated just now</span>
+              </td>
+              <td><%= program.customer.presence || "—" %></td>
+              <td class="shell-subtitle"><%= truncate(program.description.to_s, length: 80).presence || "No description yet." %></td>
+              <td>
+                <%= render "shared/ui/button", label: "View", variant: "ghost", url: program_path(program) %>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table>
-    <% else %>
-      <p class="subtle">No programs yet. Create your first program to get started.</p>
-      <div class="form-actions">
-        <%= link_to "New program", new_program_path, class: "btn btn-primary" %>
-      </div>
-    <% end %>
+    </div>
   </div>
-</div>
+<% else %>
+  <%= render "shared/ui/card", icon: "🪄", title: "Create your first program", description: "Add a program to start tracking contracts, milestones, and delivery progress.", footer: render("shared/ui/button", label: "New program", variant: "primary", url: new_program_path) %>
+<% end %>

@@ -1,6 +1,33 @@
 require "rails_helper"
 
 RSpec.describe Contract, type: :model do
+  describe "validations" do
+    it "requires unique contract_code" do
+      user = User.create!(email: "unique@example.com", password: "password")
+      program = Program.create!(name: "Program", user: user)
+      Contract.create!(
+        program: program,
+        contract_code: "C-100",
+        start_date: Date.new(2024, 1, 1),
+        end_date: Date.new(2024, 12, 31),
+        sell_price_per_unit: 100,
+        planned_quantity: 10
+      )
+
+      duplicate = Contract.new(
+        program: program,
+        contract_code: "C-100",
+        start_date: Date.new(2024, 1, 1),
+        end_date: Date.new(2024, 12, 31),
+        sell_price_per_unit: 100,
+        planned_quantity: 5
+      )
+
+      expect(duplicate).not_to be_valid
+      expect(duplicate.errors[:contract_code]).to include("has already been taken")
+    end
+  end
+
   describe "#revenue_to_date" do
     it "sums contract period revenue through the as_of date" do
       user = User.create!(email: "test@example.com", password: "password")
