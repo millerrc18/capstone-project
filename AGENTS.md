@@ -5,6 +5,9 @@
 - Do not introduce or store real credentials. Use seeds or test fixtures only.
 - Keep tasks small and verifiable. If the scope is large, propose a 3–7 step plan first.
 
+# ExecPlans
+When writing complex features or significant refactors, use an ExecPlan (as described in .agent/PLANS.md) from design to implementation.
+
 ## Local setup (Codex must follow)
 - bundle install
 - RAILS_ENV=test bin/rails db:prepare
