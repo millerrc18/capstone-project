@@ -43,8 +43,8 @@ class CostEntry < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :rate_bam, :rate_eng, :rate_mfg_salary, :rate_mfg_hourly, :rate_touch,
             numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-  validates :material_cost, :other_costs,
-            numericality: { greater_than_or_equal_to: 0 }
+  validates :material_cost, numericality: true
+  validates :other_costs, numericality: { greater_than_or_equal_to: 0 }
 
   def total_labor_hours
     hours_bam.to_d +

@@ -24,7 +24,7 @@ RSpec.describe CostEntry, type: :model do
     expect(entry.errors[:period_type]).not_to be_empty
   end
 
-  it "requires non-negative numeric values" do
+  it "requires non-negative numeric values for hours" do
     entry = described_class.new(
       period_type: "month",
       period_start_date: Date.new(2024, 1, 1),
@@ -35,6 +35,17 @@ RSpec.describe CostEntry, type: :model do
 
     expect(entry).not_to be_valid
     expect(entry.errors[:hours_bam]).not_to be_empty
+  end
+
+  it "allows negative material cost values" do
+    entry = described_class.new(
+      period_type: "month",
+      period_start_date: Date.new(2024, 1, 1),
+      material_cost: -25,
+      other_costs: 0
+    )
+
+    expect(entry).to be_valid
   end
 
   it "computes total costs" do
