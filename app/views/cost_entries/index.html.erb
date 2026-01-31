@@ -7,6 +7,7 @@
     <p class="mt-1 text-sm text-light-text/60">Review costs, delivered units, and average cost per unit.</p>
   </div>
   <div class="flex flex-wrap gap-3">
+    <%= link_to "New cost entry", new_cost_entry_path, class: "inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-light-text/80 hover:bg-white/10 focus-ring" %>
     <%= link_to "Import costs", new_cost_import_path, class: "inline-flex items-center justify-center rounded-full bg-accent-red px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-red/90 focus-ring" %>
   </div>
 </div>
@@ -76,6 +77,7 @@
           <th class="pb-3">Material cost</th>
           <th class="pb-3">Other costs</th>
           <th class="pb-3">Total cost</th>
+          <th class="pb-3">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-white/5">
@@ -88,11 +90,20 @@
               <td class="py-3"><%= number_to_currency(entry.material_cost.to_d) %></td>
               <td class="py-3"><%= number_to_currency(entry.other_costs.to_d) %></td>
               <td class="py-3 font-semibold"><%= number_to_currency(entry.total_cost) %></td>
+              <td class="py-3">
+                <div class="flex flex-wrap gap-2">
+                  <%= link_to "Edit", edit_cost_entry_path(entry), class: "text-sm font-semibold text-accent-red hover:text-accent-red/80" %>
+                  <%= button_to "Delete", cost_entry_path(entry),
+                                method: :delete,
+                                form: { class: "inline", data: { turbo_confirm: "Are you sure?" } },
+                                class: "text-sm font-semibold text-light-text/70 hover:text-light-text" %>
+                </div>
+              </td>
             </tr>
           <% end %>
         <% else %>
           <tr>
-            <td colspan="6" class="py-6 text-center text-sm text-light-text/60">No cost entries match this range.</td>
+            <td colspan="7" class="py-6 text-center text-sm text-light-text/60">No cost entries match this range.</td>
           </tr>
         <% end %>
       </tbody>

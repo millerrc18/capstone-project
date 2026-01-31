@@ -42,6 +42,15 @@ RSpec.describe "Responsive UI screenshots", type: :system, js: true do
         ship_date: Date.new(2024, 1, 10 + index)
       )
     end
+    cost_entry = CostEntry.create!(
+      program: program,
+      period_type: "week",
+      period_start_date: Date.new(2024, 1, 5),
+      hours_bam: 2,
+      rate_bam: 50,
+      material_cost: 100,
+      other_costs: 25
+    )
 
     auth_viewports = {
       "iphone_15_pro" => [ 393, 852 ],
@@ -139,8 +148,8 @@ RSpec.describe "Responsive UI screenshots", type: :system, js: true do
     end
 
     cost_hub_viewports = {
-      "iphone_15_pro" => [ 393, 852 ],
-      "ipad_air_11" => [ 834, 1194 ],
+      "iphone" => [ 393, 852 ],
+      "ipad" => [ 834, 1194 ],
       "desktop" => [ 1440, 900 ]
     }
 
@@ -148,10 +157,40 @@ RSpec.describe "Responsive UI screenshots", type: :system, js: true do
       set_viewport(width, height)
       visit cost_hub_path(start_date: "2024-01-01", end_date: "2024-01-31")
       expect(page).to have_css("tbody tr", count: 2)
-      save_named_screenshot("cost_hub", "#{device_name}.png")
+      save_ui_screenshot("cost_hub", device_name, "closed")
+
+      if width < 768
+        open_sidebar
+        save_ui_screenshot("cost_hub", device_name, "open")
+        close_sidebar
+      end
 
       visit new_cost_import_path
-      save_named_screenshot("cost_imports", "#{device_name}.png")
+      save_ui_screenshot("cost_imports", device_name, "closed")
+
+      if width < 768
+        open_sidebar
+        save_ui_screenshot("cost_imports", device_name, "open")
+        close_sidebar
+      end
+
+      visit new_cost_entry_path
+      save_ui_screenshot("cost_entries_new", device_name, "closed")
+
+      if width < 768
+        open_sidebar
+        save_ui_screenshot("cost_entries_new", device_name, "open")
+        close_sidebar
+      end
+
+      visit edit_cost_entry_path(cost_entry)
+      save_ui_screenshot("cost_entries_edit", device_name, "closed")
+
+      if width < 768
+        open_sidebar
+        save_ui_screenshot("cost_entries_edit", device_name, "open")
+        close_sidebar
+      end
     end
   end
 

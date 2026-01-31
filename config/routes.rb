@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   end
 
   get "cost-hub", to: "cost_entries#index", as: :cost_hub
+  resources :cost_entries, only: [:index, :new, :create, :edit, :update, :destroy]
   resources :cost_imports, only: [:new, :create]
 
   root "programs#index"
