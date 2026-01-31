@@ -32,7 +32,13 @@ RSpec.describe "Navigation", type: :system do
       expect(page).to have_link("Programs")
       expect(page).to have_link("Cost Hub")
       expect(page).to have_link("Contracts")
+      expect(page).to have_no_link("Cost Imports")
       expect(page).to have_no_link("Knowledge Center")
+    end
+
+    within("[data-testid='sidebar-group-imports']") do
+      expect(page).to have_text("Imports")
+      expect(page).to have_link("Cost Imports")
     end
 
     within("[data-testid='sidebar-group-registers']") do

@@ -34,10 +34,12 @@
 #  fk_rails_...  (program_id => programs.id)
 #
 class CostEntry < ApplicationRecord
-  belongs_to :program, optional: true
+  belongs_to :program
+  belongs_to :cost_import, optional: true, foreign_key: :import_id
 
   validates :period_type, presence: true, inclusion: { in: %w[week month] }
   validates :period_start_date, presence: true
+  validates :program, presence: true
 
   validates :hours_bam, :hours_eng, :hours_mfg_salary, :hours_mfg_hourly, :hours_touch,
             numericality: { greater_than_or_equal_to: 0 }, allow_nil: true

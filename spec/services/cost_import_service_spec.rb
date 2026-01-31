@@ -49,6 +49,14 @@ RSpec.describe CostImportService do
     expect(CostEntry.first.program).to eq(program)
   end
 
+  it "requires a program" do
+    service = described_class.new(user: user, program: nil, file: double("file"))
+    result = service.call
+
+    expect(result[:created]).to eq(0)
+    expect(result[:errors]).to include("Program is required for cost imports.")
+  end
+
   it "rolls back when a row is invalid" do
     headers = described_class::REQUIRED_HEADERS
     rows = [

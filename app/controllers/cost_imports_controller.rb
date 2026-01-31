@@ -1,6 +1,5 @@
 class CostImportsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_program, only: [ :create ]
 
   def new
     @programs = current_user.programs.order(:name)
@@ -8,7 +7,18 @@ class CostImportsController < ApplicationController
 
   def create
     @programs = current_user.programs.order(:name)
-    return if performed?
+    if params[:program_id].blank?
+      flash.now[:alert] = "Please select a program."
+      render :new, status: :unprocessable_entity
+      return
+    end
+
+    @program = current_user.programs.find_by(id: params[:program_id])
+    unless @program
+      flash.now[:alert] = "Not authorized."
+      render :new, status: :forbidden
+      return
+    end
 
     if params[:file].blank?
       flash.now[:alert] = "Please choose a file."
@@ -32,15 +42,4 @@ class CostImportsController < ApplicationController
   end
 
   private
-
-  def set_program
-    return if params[:program_id].blank?
-
-    @program = current_user.programs.find_by(id: params[:program_id])
-    return if @program
-
-    @programs = current_user.programs.order(:name)
-    flash.now[:alert] = "Not authorized."
-    render :new, status: :forbidden
-  end
 end

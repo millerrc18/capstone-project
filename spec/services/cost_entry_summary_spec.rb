@@ -28,7 +28,8 @@ RSpec.describe CostEntrySummary do
     summary = described_class.new(
       start_date: Date.new(2024, 1, 1),
       end_date: Date.new(2024, 1, 31),
-      program: program_a
+      program: program_a,
+      programs_scope: user.programs
     ).call
 
     expect(summary[:total_units]).to eq(0)
@@ -60,7 +61,8 @@ RSpec.describe CostEntrySummary do
     summary = described_class.new(
       start_date: Date.new(2024, 1, 1),
       end_date: Date.new(2024, 1, 31),
-      program: program_a
+      program: program_a,
+      programs_scope: user.programs
     ).call
 
     expect(summary[:total_cost]).to eq(125.to_d)

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class CostEntrySummary
-  def initialize(start_date:, end_date:, program: nil)
+  def initialize(start_date:, end_date:, program: nil, programs_scope: Program.all)
     @start_date = start_date
     @end_date = end_date
     @program = program
+    @programs_scope = programs_scope
   end
 
   def call
@@ -18,7 +19,9 @@ class CostEntrySummary
   private
 
   def cost_entries
-    scope = CostEntry.where(period_start_date: @start_date..@end_date)
+    scope = CostEntry.joins(:program)
+                     .where(programs: { id: @programs_scope.select(:id) })
+                     .where(period_start_date: @start_date..@end_date)
     scope = scope.where(program_id: @program.id) if @program
     scope
   end
@@ -31,6 +34,8 @@ class CostEntrySummary
     units = DeliveryUnit.where(ship_date: @start_date..@end_date)
     if @program
       units = units.joins(:contract).where(contracts: { program_id: @program.id })
+    else
+      units = units.joins(:contract).where(contracts: { program_id: @programs_scope.select(:id) })
     end
     units.count
   end

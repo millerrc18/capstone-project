@@ -11,12 +11,13 @@
   <% end %>
 
   <div>
-    <%= form.label :program_id, "Program (optional)", class: "text-sm font-semibold" %>
+    <%= form.label :program_id, "Program", class: "text-sm font-semibold" %>
     <%= form.select :program_id,
                     options_from_collection_for_select(@programs, :id, :name, cost_entry.program_id),
-                    { include_blank: "Multiple programs" },
-                    class: "mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-light-text focus-ring" %>
-    <p class="mt-2 text-xs text-light-text/50">Leave blank to track costs across programs.</p>
+                    { include_blank: "Select a program" },
+                    class: "mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-light-text focus-ring",
+                    required: true %>
+    <p class="mt-2 text-xs text-light-text/50">Costs are tracked per program.</p>
   </div>
 
   <div class="grid gap-4 md:grid-cols-2">

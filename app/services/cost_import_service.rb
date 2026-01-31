@@ -13,14 +13,18 @@ class CostImportService
 
   ALLOWED_PERIOD_TYPES = %w[week month].freeze
 
-  def initialize(user:, program: nil, file:)
+  def initialize(user:, program:, file:)
     @user = user
     @program = program
     @file = file
   end
 
   def call
-    if @program && @program.user_id != @user.id
+    if @program.nil?
+      return { created: 0, errors: [ "Program is required for cost imports." ] }
+    end
+
+    if @program.user_id != @user.id
       return { created: 0, errors: [ "Not authorized to import costs for this program." ] }
     end
 
@@ -32,6 +36,12 @@ class CostImportService
     errors = []
 
     CostEntry.transaction do
+      cost_import = CostImport.create!(
+        program: @program,
+        user: @user,
+        source_filename: source_filename
+      )
+
       2.upto(sheet.last_row) do |row_num|
         row = sheet.row(row_num)
         next if blank_row?(row)
@@ -61,7 +71,8 @@ class CostImportService
           material_cost: to_d(cell(row, index["material_cost"])),
           other_costs: to_d(cell(row, index["other_costs"])),
           notes: notes,
-          program: @program
+          program: @program,
+          cost_import: cost_import
         )
 
         if record.valid?
@@ -74,6 +85,7 @@ class CostImportService
         errors << "Row #{row_num}: #{e.message}."
       end
 
+      cost_import.update!(entries_count: created) if errors.empty?
       raise ActiveRecord::Rollback if errors.any?
     end
 
@@ -85,6 +97,13 @@ class CostImportService
   def load_sheet(file)
     path = file.respond_to?(:tempfile) ? file.tempfile.path : file.path
     Roo::Excelx.new(path).sheet(0)
+  end
+
+  def source_filename
+    return @file.original_filename if @file.respond_to?(:original_filename)
+    return File.basename(@file.path) if @file.respond_to?(:path)
+
+    "costs_import.xlsx"
   end
 
   def normalize_headers(row)

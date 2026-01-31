@@ -29,7 +29,7 @@ This is a living document that tracks product improvements and refinements acros
 
 ### IMP-001 Program-scoped costs
 
-- **Status**: Planned
+- **Status**: Done
 - **Why**: Programs are the top-level boundary. Costs cannot be shared across programs.
 - **Approach**:
   - Enforce `CostEntry belongs_to Program` with `program_id` required.
@@ -39,14 +39,15 @@ This is a living document that tracks product improvements and refinements acros
   - Every cost entry belongs to exactly one program.
   - Cost Hub totals and charts never include costs from other programs.
   - Contract metrics, when showing cost, are explicitly program-scoped.
-- **Evidence required**:
+- **Evidence**:
   - Model specs for validation.
   - System spec that creates two programs and verifies costs never mix.
-  - Screenshots of Cost Hub with program filtering.
+  - Screenshots of Cost Hub with program filtering from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-002 Cost entry CRUD (manual entry, edit, delete, duplicate)
 
-- **Status**: Planned
+- **Status**: Done
 - **Why**: Import-only cost entry blocks adoption and prevents correcting mistakes.
 - **Approach**:
   - Add Cost Entries create/edit/delete UI.
@@ -57,13 +58,14 @@ This is a living document that tracks product improvements and refinements acros
   - User can edit imported costs.
   - User can delete costs with confirmation.
   - User can duplicate a cost entry.
-- **Evidence required**:
+- **Evidence**:
   - System specs for create/edit/delete/duplicate.
-  - Screenshots of new and edit forms.
+  - Screenshots of new and edit forms from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-003 Navigation and information architecture
 
-- **Status**: Planned
+- **Status**: Done
 - **Why**: Cost Hub should be in Workspace; Imports should stay import-related.
 - **Approach**:
   - Move Cost Hub link into Workspace group.
@@ -71,13 +73,14 @@ This is a living document that tracks product improvements and refinements acros
   - Rename Docs to Knowledge Center or Documentation and place outside Workspace.
 - **Acceptance criteria**:
   - Sidebar grouping matches the intended structure across desktop, iPad, iPhone.
-- **Evidence required**:
+- **Evidence**:
   - Navigation system spec.
-  - Sidebar screenshots in all viewports.
+  - Sidebar screenshots in all viewports from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-004 Cost Hub visualizations
 
-- **Status**: Proposed
+- **Status**: Done
 - **Why**: Tables are hard to scan. Visual summaries improve insight.
 - **Approach**:
   - Add a small set of charts that respect program and date filters.
@@ -89,34 +92,37 @@ This is a living document that tracks product improvements and refinements acros
 - **Acceptance criteria**:
   - Charts render with seeded data.
   - Charts update when filters change.
-- **Evidence required**:
+- **Evidence**:
   - System spec asserting chart containers render.
-  - Screenshots for each viewport.
+  - Screenshots for each viewport from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-005 Contract visualizations
 
-- **Status**: Proposed
+- **Status**: Done
 - **Why**: Contracts need quick signals: delivery trend, progress vs plan.
 - **Candidate charts**:
   - Delivered units over time (bar or line).
   - Cumulative delivered vs planned quantity (burn-up).
 - **Acceptance criteria**:
   - Charts render and respect the contract context.
-- **Evidence required**:
+- **Evidence**:
   - System spec with seeded deliveries.
-  - Screenshots.
+  - Screenshots from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-006 Dark-theme form control readability
 
-- **Status**: Planned
+- **Status**: Done
 - **Why**: Some controls (notably select dropdowns) are unreadable in dark mode.
 - **Approach**:
   - Standardize Tailwind classes for inputs and selects.
   - Ensure focus ring and hover states are consistent.
 - **Acceptance criteria**:
   - All primary controls meet readable contrast in dark theme.
-- **Evidence required**:
-  - Screenshots of forms.
+- **Evidence**:
+  - Screenshots of forms from bin/ui-screenshots (pending due to missing Chrome).
+  - PR: pending.
 
 ### IMP-007 Search keytips cross-platform
 
@@ -130,6 +136,25 @@ This is a living document that tracks product improvements and refinements acros
   - System spec if feasible.
   - Screenshot evidence.
 
+### IMP-008 Cost Hub period type filter
+
+- **Status**: Proposed
+- **Why**: Mixed weekly and monthly entries can make charts harder to read.
+- **Approach**:
+  - Add a period type filter to Cost Hub and align charts to the selected type.
+  - Persist the selected type in the query string.
+- **Acceptance criteria**:
+  - Users can filter to week or month entries.
+  - Charts and totals update with the filter.
+- **Evidence required**:
+  - System spec covering the new filter.
+  - UI screenshots showing the filtered state.
+
 ## Completed improvements
 
-None recorded yet in this log.
+- IMP-001 Program scoped costs. Evidence in system and model specs, screenshots pending due to missing Chrome.
+- IMP-002 Cost entry CRUD. Evidence in system specs, screenshots pending due to missing Chrome.
+- IMP-003 Navigation information architecture. Evidence in navigation specs, screenshots pending due to missing Chrome.
+- IMP-004 Cost Hub visualizations. Evidence in cost hub system spec, screenshots pending due to missing Chrome.
+- IMP-005 Contract visualizations. Evidence in contract charts system spec, screenshots pending due to missing Chrome.
+- IMP-006 Dark theme form control readability. Evidence in cost import system spec, screenshots pending due to missing Chrome.

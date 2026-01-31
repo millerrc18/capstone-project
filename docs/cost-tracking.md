@@ -7,7 +7,7 @@ category: Analytics
 
 # Cost tracking hub
 
-The Cost Hub captures labor and material spending that isn’t tied to a specific contract. Each **Cost Entry** represents a week or month of costs, which can be filtered by date range and program.
+The Cost Hub captures labor and material spending that is not tied to a specific contract. Each **Cost Entry** represents a week or month of costs, which can be filtered by date range and program.
 
 ## Cost Entry fields
 
@@ -20,16 +20,22 @@ Each Cost Entry contains:
 - `material_cost`: direct material spend.
 - `other_costs`: miscellaneous costs.
 - `notes`: optional context about the entry.
-- `program`: optional program association.
+- `program`: the program that owns the cost entry.
 
 ## Importing cost data
 
 1. From the sidebar, open **Cost Hub**.
 2. Select **Import costs**.
-3. Optionally choose a program, then upload the `costs.xlsx` template.
+3. Choose a program, then upload the `costs.xlsx` template.
 4. Review the import summary and return to the Cost Hub.
 
 The import template uses the headers listed on the import page. The previous `contract_code` column is no longer required.
+
+## Manual cost entry
+
+1. From the Cost Hub, select **New cost entry**.
+2. Choose a program and fill in the period and cost fields.
+3. Save to add the entry to totals and charts.
 
 ## Using the Cost Hub
 
@@ -38,6 +44,7 @@ The import template uses the headers listed on the import page. The previous `co
 - **Total cost** aggregates all matching Cost Entries.
 - **Units delivered** count Delivery Unit records shipped in the same period.
 - **Average cost per unit** divides total cost by delivered units (shows zero when no units are delivered).
+- **Charts** show total cost and cost components over time for the selected program and date range.
 
 ## Related guides
 

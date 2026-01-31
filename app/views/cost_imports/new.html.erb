@@ -3,13 +3,14 @@
 
 <div class="panel p-6 max-w-xl space-y-6">
   <%= form_with url: cost_imports_path, local: true, multipart: true, class: "space-y-4" do |f| %>
-    <div>
-      <%= f.label :program_id, "Program (optional)", class: "text-sm font-semibold" %>
+    <div class="relative">
+      <%= f.label :program_id, "Program", class: "text-sm font-semibold" %>
       <%= f.select :program_id,
                    options_from_collection_for_select(@programs, :id, :name, params[:program_id]),
-                   { include_blank: "All programs" },
-                   class: "mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-light-text focus-ring" %>
-      <p class="mt-2 text-xs text-light-text/50">Leave blank to import costs that span multiple programs.</p>
+                   { include_blank: "Select a program" },
+                   class: "mt-2 w-full appearance-none rounded-2xl border border-white/20 bg-dark-panel-strong px-4 py-3 text-sm text-light-text shadow-sm focus:border-accent-red/70 focus:outline-none focus:ring-2 focus:ring-accent-red/50 focus:ring-offset-0",
+                   required: true %>
+      <p class="mt-2 text-xs text-light-text/50">Costs are scoped to a single program.</p>
     </div>
 
     <div>

@@ -7,7 +7,7 @@ category: Imports
 
 # Importing costs
 
-Cost imports let you track labor and material spend that isn’t tied to a single contract.
+Cost imports let you track labor and material spend that is not tied to a single contract.
 
 ## Supported file formats
 
@@ -33,7 +33,7 @@ Include the following columns (case-insensitive):
 
 1. Open **Cost Hub** from the sidebar.
 2. Select **Import costs**.
-3. Choose your file, optionally select a program, and upload.
+3. Choose your program, select the file, and upload.
 4. Review any validation errors and re-upload if needed.
 
 ## Troubleshooting
