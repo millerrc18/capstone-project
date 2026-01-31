@@ -30,8 +30,15 @@
     <p class="text-xs uppercase tracking-[0.2em] text-light-text/40">Workspace</p>
     <nav class="space-y-2 sidebar-nav">
       <%= render "shared/ui/nav_item", label: "Programs", url: programs_path, icon: "folder", active: controller_name == "programs" %>
-      <%= render "shared/ui/nav_item", label: "Cost Hub", url: cost_hub_path, icon: "currency", active: %w[cost_entries cost_imports].include?(controller_name) %>
+      <%= render "shared/ui/nav_item", label: "Cost Hub", url: cost_hub_path, icon: "currency", active: controller_name == "cost_entries" %>
       <%= render "shared/ui/nav_item", label: "Contracts", url: contracts_path, icon: "receipt", active: controller_name == "contracts" %>
+    </nav>
+  </div>
+
+  <div class="space-y-3 border-t border-white/10 pt-4" data-testid="sidebar-group-imports">
+    <p class="text-xs uppercase tracking-[0.2em] text-light-text/40">Imports</p>
+    <nav class="space-y-2 sidebar-nav">
+      <%= render "shared/ui/nav_item", label: "Cost Imports", url: new_cost_import_path, icon: "document", active: controller_name == "cost_imports" %>
     </nav>
   </div>
 

@@ -24,7 +24,7 @@ RSpec.describe "Cost entries", type: :system do
     visit new_cost_entry_path
     select "Week", from: "Period type"
     fill_in "Period start date", with: Date.current
-    select program.name, from: "Program (optional)"
+    select program.name, from: "Program"
     fill_in "Hours BAM", with: "2"
     fill_in "Rate BAM", with: "50"
     fill_in "Material cost", with: "100"
@@ -103,6 +103,35 @@ RSpec.describe "Cost entries", type: :system do
 
     expect(page).to have_content("Cost entry deleted.")
     expect(page).to have_content("No cost entries match this range.")
+  end
+
+  it "duplicates a cost entry and updates totals" do
+    user = User.create!(email: "duper@example.com", password: "password")
+    program = Program.create!(name: "Drift", user: user)
+
+    entry = CostEntry.create!(
+      program: program,
+      period_type: "week",
+      period_start_date: Date.current,
+      material_cost: 100,
+      other_costs: 10
+    )
+
+    sign_in(user)
+
+    visit cost_hub_path
+    within("tr", text: entry.period_start_date.to_s) do
+      click_link "Duplicate"
+    end
+
+    expect(find_field("Material cost").value.to_f).to eq(100.0)
+    expect(find_field("Other costs").value.to_f).to eq(10.0)
+
+    click_button "Create cost entry"
+
+    expect(page).to have_content("Cost entry created.")
+    expect(page).to have_css("tbody tr", count: 2)
+    expect(page).to have_content("$220.00")
   end
 
   def sign_in(user)

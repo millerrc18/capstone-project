@@ -31,6 +31,7 @@ RSpec.describe "Sidebar navigation", type: :system do
       [ "Milestones", "Milestones", delivery_milestones_path ],
       [ "Delivery units", "Delivery units", delivery_units_path ],
       [ "Cost Hub", "Cost Hub", cost_hub_path ],
+      [ "Cost Imports", "Import costs", new_cost_import_path ],
       [ "Knowledge Center", "Documentation", docs_path ]
     ]
 

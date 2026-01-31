@@ -18,6 +18,7 @@ class ContractsController < ApplicationController
     @periods    = @contract.contract_periods.order(:period_start_date)
     @milestones = @contract.delivery_milestones.order(:due_date)
     @units      = @contract.delivery_units.order(:ship_date, :unit_serial)
+    build_chart_data
   end
 
   def new
@@ -71,5 +72,29 @@ class ContractsController < ApplicationController
       :sell_price_per_unit,
       :notes
     )
+  end
+
+  def build_chart_data
+    periods_for_chart = @periods.select { |period| period.period_start_date.present? }
+    @period_chart_labels = periods_for_chart.map { |period| period.period_start_date.strftime("%b %-d") }
+    @units_chart_dataset = [
+      {
+        label: "Units delivered",
+        data: periods_for_chart.map { |period| period.units_delivered.to_i },
+        borderColor: "#F97316",
+        backgroundColor: "#FDBA74",
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 4
+      }
+    ]
+    @revenue_chart_dataset = [
+      {
+        label: "Revenue",
+        data: periods_for_chart.map { |period| period.revenue_total.to_d.to_f },
+        backgroundColor: "#38BDF8",
+        borderColor: "#38BDF8"
+      }
+    ]
   end
 end

@@ -50,6 +50,42 @@
   </div>
 </div>
 
+<div class="mt-6 grid gap-6 lg:grid-cols-2">
+  <div class="panel p-6">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h3 class="text-base font-semibold">Total cost over time</h3>
+        <p class="mt-1 text-sm text-light-text/60">Weekly and monthly totals for the selected range.</p>
+      </div>
+    </div>
+    <div class="mt-4 h-64">
+      <canvas
+        class="h-full w-full"
+        data-controller="chart"
+        data-chart-type-value="line"
+        data-chart-labels-value="<%= @chart_labels.to_json %>"
+        data-chart-datasets-value="<%= @cost_line_datasets.to_json %>"></canvas>
+    </div>
+  </div>
+  <div class="panel p-6">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h3 class="text-base font-semibold">Cost components</h3>
+        <p class="mt-1 text-sm text-light-text/60">Labor, material, and other spend by period.</p>
+      </div>
+    </div>
+    <div class="mt-4 h-64">
+      <canvas
+        class="h-full w-full"
+        data-controller="chart"
+        data-chart-type-value="bar"
+        data-chart-stacked-value="true"
+        data-chart-labels-value="<%= @chart_labels.to_json %>"
+        data-chart-datasets-value="<%= @cost_stack_datasets.to_json %>"></canvas>
+    </div>
+  </div>
+</div>
+
 <div class="mt-6 panel p-6">
   <div class="flex items-center justify-between gap-4">
     <div>
@@ -85,7 +121,7 @@
           <% @entries.each do |entry| %>
             <tr>
               <td class="py-3"><%= entry.period_start_date %></td>
-              <td class="py-3"><%= entry.program&.name || "Multiple" %></td>
+              <td class="py-3"><%= entry.program.name %></td>
               <td class="py-3"><%= entry.total_labor_hours %></td>
               <td class="py-3"><%= number_to_currency(entry.material_cost.to_d) %></td>
               <td class="py-3"><%= number_to_currency(entry.other_costs.to_d) %></td>
@@ -93,6 +129,7 @@
               <td class="py-3">
                 <div class="flex flex-wrap gap-2">
                   <%= link_to "Edit", edit_cost_entry_path(entry), class: "text-sm font-semibold text-accent-red hover:text-accent-red/80" %>
+                  <%= link_to "Duplicate", duplicate_cost_entry_path(entry), class: "text-sm font-semibold text-light-text/70 hover:text-light-text" %>
                   <%= button_to "Delete", cost_entry_path(entry),
                                 method: :delete,
                                 form: { class: "inline", data: { turbo_confirm: "Are you sure?" } },

@@ -1,8 +1,8 @@
 class CostEntriesController < ApplicationController
   helper_method :sort_direction_for
 
-  before_action :set_cost_entry, only: [ :edit, :update, :destroy ]
-  before_action :set_programs, only: [ :new, :create, :edit, :update ]
+  before_action :set_cost_entry, only: [ :edit, :update, :destroy, :duplicate ]
+  before_action :set_programs, only: [ :new, :create, :edit, :update, :duplicate ]
 
   def index
     @programs = current_user.programs.order(:name)
@@ -21,15 +21,20 @@ class CostEntriesController < ApplicationController
     @direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
 
     @entries = CostEntry.includes(:program)
+                        .joins(:program)
+                        .where(programs: { user_id: current_user.id })
                         .where(period_start_date: @start_date..@end_date)
     @entries = @entries.where(program_id: @program.id) if @program
-    @entries = apply_sort(@entries)
+    @entries = apply_sort(@entries).to_a
 
     @summary = CostEntrySummary.new(
       start_date: @start_date,
       end_date: @end_date,
-      program: @program
+      program: @program,
+      programs_scope: current_user.programs
     ).call
+
+    build_chart_data(@entries)
   end
 
   def new
@@ -60,6 +65,11 @@ class CostEntriesController < ApplicationController
     end
   end
 
+  def duplicate
+    @cost_entry = @cost_entry.dup
+    render :new
+  end
+
   def destroy
     @cost_entry.destroy
     redirect_to cost_hub_path, notice: "Cost entry deleted."
@@ -82,9 +92,15 @@ class CostEntriesController < ApplicationController
   end
 
   def assign_program
-    return @cost_entry.program = nil if cost_entry_params[:program_id].blank?
+    if cost_entry_params[:program_id].blank?
+      @cost_entry.program = nil
+      return
+    end
 
     @cost_entry.program = current_user.programs.find_by(id: cost_entry_params[:program_id])
+    return if @cost_entry.program
+
+    @cost_entry.errors.add(:program, "is not available")
   end
 
   def cost_entry_params
@@ -121,6 +137,86 @@ class CostEntriesController < ApplicationController
 
     scope.left_joins(:program)
          .order("programs.name #{@direction}, cost_entries.period_start_date #{@direction}")
+  end
+
+  def build_chart_data(entries)
+    entries_by_date = entries.group_by(&:period_start_date)
+    @chart_dates = entries_by_date.keys.sort
+    @chart_labels = @chart_dates.map { |date| date.strftime("%b %-d") }
+
+    @cost_line_datasets = cost_line_datasets(entries_by_date)
+    @cost_stack_datasets = cost_stack_datasets(entries_by_date)
+  end
+
+  def cost_line_datasets(entries_by_date)
+    period_styles = {
+      "week" => { label: "Week", color: "#F87171" },
+      "month" => { label: "Month", color: "#60A5FA" }
+    }
+
+    period_styles.map do |period_type, style|
+      data_points = @chart_dates.map do |date|
+        entries_by_date.fetch(date, []).select { |entry| entry.period_type == period_type }
+                      .sum(&:total_cost).to_f
+      end
+
+      {
+        label: style[:label],
+        data: data_points,
+        borderColor: style[:color],
+        backgroundColor: style[:color],
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 4
+      }
+    end
+  end
+
+  def cost_stack_datasets(entries_by_date)
+    series = [
+      { key: :bam, label: "BAM", color: "#F87171" },
+      { key: :eng, label: "ENG", color: "#FBBF24" },
+      { key: :mfg_salary, label: "MFG Salary", color: "#34D399" },
+      { key: :mfg_hourly, label: "MFG Hourly", color: "#60A5FA" },
+      { key: :touch, label: "Touch", color: "#A78BFA" },
+      { key: :material_cost, label: "Material", color: "#38BDF8" },
+      { key: :other_costs, label: "Other", color: "#F472B6" }
+    ]
+
+    series.map do |series_item|
+      data_points = @chart_dates.map do |date|
+        entries = entries_by_date.fetch(date, [])
+        sum_costs(entries, series_item[:key]).to_f
+      end
+
+      {
+        label: series_item[:label],
+        data: data_points,
+        backgroundColor: series_item[:color],
+        borderColor: series_item[:color]
+      }
+    end
+  end
+
+  def sum_costs(entries, key)
+    case key
+    when :bam
+      entries.sum { |entry| entry.hours_bam.to_d * entry.rate_bam.to_d }
+    when :eng
+      entries.sum { |entry| entry.hours_eng.to_d * entry.rate_eng.to_d }
+    when :mfg_salary
+      entries.sum { |entry| entry.hours_mfg_salary.to_d * entry.rate_mfg_salary.to_d }
+    when :mfg_hourly
+      entries.sum { |entry| entry.hours_mfg_hourly.to_d * entry.rate_mfg_hourly.to_d }
+    when :touch
+      entries.sum { |entry| entry.hours_touch.to_d * entry.rate_touch.to_d }
+    when :material_cost
+      entries.sum { |entry| entry.material_cost.to_d }
+    when :other_costs
+      entries.sum { |entry| entry.other_costs.to_d }
+    else
+      0.to_d
+    end
   end
 
   def sort_direction_for(column)

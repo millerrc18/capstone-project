@@ -72,7 +72,7 @@ RSpec.describe "Responsive UI screenshots", type: :system, js: true do
     click_button "Sign in"
 
     visit new_cost_import_path
-    select program.name, from: "Program (optional)"
+    select program.name, from: "Program"
     attach_file "Excel file", Rails.root.join("spec/fixtures/files/costs_import.xlsx")
     click_button "Import"
     expect(page).to have_content("Costs imported")

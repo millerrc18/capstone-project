@@ -11,31 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2026_01_31_011601) do
-  create_table "cost_entries", force: :cascade do |t|
-    t.string "period_type", null: false
-    t.date "period_start_date", null: false
-    t.decimal "hours_bam", precision: 15, scale: 2
-    t.decimal "hours_eng", precision: 15, scale: 2
-    t.decimal "hours_mfg_salary", precision: 15, scale: 2
-    t.decimal "hours_mfg_hourly", precision: 15, scale: 2
-    t.decimal "hours_touch", precision: 15, scale: 2
-    t.decimal "rate_bam", precision: 15, scale: 2
-    t.decimal "rate_eng", precision: 15, scale: 2
-    t.decimal "rate_mfg_salary", precision: 15, scale: 2
-    t.decimal "rate_mfg_hourly", precision: 15, scale: 2
-    t.decimal "rate_touch", precision: 15, scale: 2
-    t.decimal "material_cost", precision: 15, scale: 2
-    t.decimal "other_costs", precision: 15, scale: 2
-    t.text "notes"
-    t.bigint "program_id"
-    t.bigint "import_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["import_id"], name: "index_cost_entries_on_import_id"
-    t.index ["period_start_date"], name: "index_cost_entries_on_period_start_date"
-    t.index ["program_id"], name: "index_cost_entries_on_program_id"
-  end
-
   create_table "contract_periods", force: :cascade do |t|
     t.bigint "contract_id", null: false
     t.date "period_start_date"
@@ -74,6 +49,42 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_011601) do
     t.datetime "updated_at", null: false
     t.index ["contract_code"], name: "index_contracts_on_contract_code", unique: true
     t.index ["program_id"], name: "index_contracts_on_program_id"
+  end
+
+  create_table "cost_imports", force: :cascade do |t|
+    t.bigint "program_id", null: false
+    t.bigint "user_id", null: false
+    t.string "source_filename"
+    t.integer "entries_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_cost_imports_on_program_id"
+    t.index ["user_id"], name: "index_cost_imports_on_user_id"
+  end
+
+  create_table "cost_entries", force: :cascade do |t|
+    t.string "period_type", null: false
+    t.date "period_start_date", null: false
+    t.decimal "hours_bam", precision: 15, scale: 2
+    t.decimal "hours_eng", precision: 15, scale: 2
+    t.decimal "hours_mfg_salary", precision: 15, scale: 2
+    t.decimal "hours_mfg_hourly", precision: 15, scale: 2
+    t.decimal "hours_touch", precision: 15, scale: 2
+    t.decimal "rate_bam", precision: 15, scale: 2
+    t.decimal "rate_eng", precision: 15, scale: 2
+    t.decimal "rate_mfg_salary", precision: 15, scale: 2
+    t.decimal "rate_mfg_hourly", precision: 15, scale: 2
+    t.decimal "rate_touch", precision: 15, scale: 2
+    t.decimal "material_cost", precision: 15, scale: 2
+    t.decimal "other_costs", precision: 15, scale: 2
+    t.text "notes"
+    t.bigint "program_id", null: false
+    t.bigint "import_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["import_id"], name: "index_cost_entries_on_import_id"
+    t.index ["period_start_date"], name: "index_cost_entries_on_period_start_date"
+    t.index ["program_id"], name: "index_cost_entries_on_program_id"
   end
 
   create_table "delivery_milestones", force: :cascade do |t|
@@ -275,7 +286,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_011601) do
 
   add_foreign_key "contract_periods", "contracts"
   add_foreign_key "contracts", "programs"
+  add_foreign_key "cost_entries", "cost_imports", column: "import_id"
   add_foreign_key "cost_entries", "programs"
+  add_foreign_key "cost_imports", "programs"
+  add_foreign_key "cost_imports", "users"
   add_foreign_key "delivery_milestones", "contracts"
   add_foreign_key "delivery_units", "contracts"
   add_foreign_key "programs", "users"

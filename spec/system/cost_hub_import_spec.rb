@@ -33,7 +33,7 @@ RSpec.describe "Cost Hub imports", type: :system do
     click_button "Sign in"
 
     visit new_cost_import_path
-    select program.name, from: "Program (optional)"
+    select program.name, from: "Program"
     attach_file "Excel file", write_cost_import_fixture.path
     click_button "Import"
 
@@ -46,6 +46,22 @@ RSpec.describe "Cost Hub imports", type: :system do
     expect(page).to have_content("4")
     expect(page).to have_content("$115.00")
     expect(page).to have_css("tbody tr", count: 2)
+  end
+
+  it "renders a readable program select in dark mode" do
+    user = User.create!(email: "importer-style@example.com", password: "password")
+    program = Program.create!(name: "Import Program", user: user)
+
+    visit new_user_session_path
+    fill_in "Email", with: user.email
+    fill_in "Password", with: "password"
+    click_button "Sign in"
+
+    visit new_cost_import_path
+    select_class = "mt-2 w-full appearance-none rounded-2xl border border-white/20 bg-dark-panel-strong px-4 py-3 text-sm text-light-text shadow-sm focus:border-accent-red/70 focus:outline-none focus:ring-2 focus:ring-accent-red/50 focus:ring-offset-0"
+
+    expect(page).to have_css("select[name='program_id'][class='#{select_class}']")
+    expect(page).to have_select("Program", options: [ "Select a program", program.name ])
   end
 
   def write_cost_import_fixture
